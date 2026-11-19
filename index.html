@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wisdom chat screens</title>
+<style>
+  :root { --bg: #FFFFFF; --side: #F7F8FA; --line: #E4E8F2; --text: #0B1020; --sub: #4A5578; --accent: #544AEF; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.55 Inter, system-ui, -apple-system, sans-serif; }
+  .wrap { display: flex; align-items: flex-start; }
+  nav { position: sticky; top: 0; flex: 0 0 280px; height: 100vh; overflow-y: auto; background: var(--side); border-right: 1px solid var(--line); padding: 28px 20px; }
+  nav h1 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+  nav p { margin: 0 0 20px; color: var(--sub); font-size: 12.5px; }
+  nav h2 { margin: 0 0 8px; font-size: 12px; font-weight: 500; color: var(--sub); text-transform: uppercase; letter-spacing: 0.04em; }
+  nav ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  nav a { display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; color: var(--text); text-decoration: none; }
+  nav a:hover { background: #EEF0F5; }
+  nav a span { color: var(--sub); font-variant-numeric: tabular-nums; }
+  main { flex: 1; min-width: 0; padding: 32px 40px 80px; display: flex; flex-direction: column; gap: 56px; }
+  section { scroll-margin-top: 24px; }
+  section h2 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  section p { margin: 0 0 16px; color: var(--sub); max-width: 70ch; }
+  section img { display: block; width: 100%; max-width: 1440px; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 800px) {
+    .wrap { display: block; }
+    nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 20px 16px; }
+    main { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Contents">
+    <h1>Wisdom chat screens</h1>
+    <p>Business insights on Global Superstore 2016, rendered at 1440&nbsp;px.</p>
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#original"><span>1</span>Original Wisdom chat: insights in charts</a></li>
+      <li><a href="#no-charts"><span>2</span>Chat answer without charts</a></li>
+      <li><a href="#redesign"><span>3</span>Redesigned chat answer with charts</a></li>
+    </ol>
+  </nav>
+  <main>
+    <section id="original">
+      <h2>1. Original Wisdom chat: insights in charts</h2>
+      <p>A render of the original Wisdom answer to “i want a set of descriptive insights about this business, in charts”: four charts, then the business takeaways.</p>
+      <img src="1-original-wisdom-chat-insights-in-charts.png" alt="Original Wisdom chat answer with four charts followed by business takeaways" loading="lazy">
+    </section>
+    <section id="no-charts">
+      <h2>2. Chat answer without charts</h2>
+      <p>A render of the Wisdom answer to “i want a set of descriptive insights about this business, not charts”: KPI tiles and nine text-only findings.</p>
+      <img src="2-chat-answer-without-charts.png" alt="Chat answer with KPI tiles and nine text findings" loading="lazy">
+    </section>
+    <section id="redesign">
+      <h2>3. Redesigned chat answer with charts</h2>
+      <p>The redesign: the same findings as screen 2, each with its chart in the same card.</p>
+      <img src="3-redesigned-chat-answer-with-charts.png" alt="Redesigned chat answer with a chart inside each finding card" loading="lazy">
+    </section>
+  </main>
+</div>
+</body>
+</html>
