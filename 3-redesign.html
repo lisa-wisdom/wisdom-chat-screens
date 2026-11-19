@@ -114,7 +114,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Sales and profit growth</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Annual totals indexed to 2012 = 100</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.growth.tableOn}}" onClick="{{c.growth.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.growth.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.growth.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.growth.h}}px; font-size: 12px">
@@ -157,7 +156,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Sales and profit margin by market</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">2012–2015 · dashed line marks the company margin</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.markets.tableOn}}" onClick="{{c.markets.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.markets.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.markets.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.markets.h}}px; font-size: 12px">
@@ -201,7 +199,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit margin by region</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Highest and lowest of 23 regions, 2012–2015</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.regions.tableOn}}" onClick="{{c.regions.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.regions.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.regions.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.regions.h}}px; font-size: 12px">
@@ -250,7 +247,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit by sub-category</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Grouped by category, 2012–2015 · US$</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.subcats.tableOn}}" onClick="{{c.subcats.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.subcats.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.subcats.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.subcats.h}}px; font-size: 12px">
@@ -299,7 +295,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit margin by discount level</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Line-item discount bands · share of total sales under each band</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.bands.tableOn}}" onClick="{{c.bands.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.bands.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.bands.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.bands.h}}px; font-size: 12px">
@@ -340,7 +335,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Segment size and margin</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Share of sales varies widely; margin barely moves</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.segments.tableOn}}" onClick="{{c.segments.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.segments.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.segments.chartOn}}" hint-placeholder-val="{{ true }}">
 <sc-if value="{{c.segments.wide}}" hint-placeholder-val="{{ true }}">
@@ -412,7 +406,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Ship mode economics</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Line-item averages, 2012–2015</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.ship.tableOn}}" onClick="{{c.ship.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.ship.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.ship.chartOn}}" hint-placeholder-val="{{ true }}">
 <sc-if value="{{c.ship.wide}}" hint-placeholder-val="{{ true }}">
@@ -484,7 +477,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Top 10 customers by sales</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Sales and profit per customer, 2012–2015 · US$</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.customers.tableOn}}" onClick="{{c.customers.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.customers.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.customers.chartOn}}" hint-placeholder-val="{{ true }}">
 <sc-if value="{{c.customers.wide}}" hint-placeholder-val="{{ true }}">
@@ -556,7 +548,6 @@ button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2p
 <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Most and least profitable products</div>
 <div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Total profit, 2012–2015 · US$</div>
 </figcaption>
-<button type="button" class="wc-ghost" aria-pressed="{{c.products.tableOn}}" onClick="{{c.products.toggle}}" style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px solid #E4E8F2; border-radius: 8px; background: #FFFFFF; color: #4A5578; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M12 3v18"></path></svg><span>{{c.products.toggleLabel}}</span></button>
 </div>
 <sc-if value="{{c.products.chartOn}}" hint-placeholder-val="{{ true }}">
 <div style="position: relative; height: {{c.products.h}}px; font-size: 12px">
