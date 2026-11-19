@@ -4,48 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wisdom chat screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #FFFFFF; --side: #F7F8FA; --line: #E4E8F2; --text: #0B1020; --sub: #4A5578; --accent: #544AEF; }
+  :root { --side: #F7F8FA; --line: #E4E8F2; --text: #0B1020; --sub: #4A5578; --accent: #544AEF; }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.55 Inter, system-ui, -apple-system, sans-serif; }
-  .wrap { display: flex; align-items: flex-start; }
-  nav { position: sticky; top: 0; flex: 0 0 280px; height: 100vh; overflow-y: auto; background: var(--side); border-right: 1px solid var(--line); padding: 28px 20px; }
-  nav h1 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
-  nav p { margin: 0 0 20px; color: var(--sub); font-size: 12.5px; }
-  nav h2 { margin: 0 0 8px; font-size: 12px; font-weight: 500; color: var(--sub); text-transform: uppercase; letter-spacing: 0.04em; }
-  nav ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
-  nav a { display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; color: var(--text); text-decoration: none; }
-  nav a:hover { background: #EEF0F5; }
-  nav a span { color: var(--sub); font-variant-numeric: tabular-nums; }
-  main { flex: 1; min-width: 0; padding: 32px 40px 80px; display: flex; flex-direction: column; gap: 56px; }
-  section { scroll-margin-top: 24px; }
-  section h2 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
-  section p { margin: 0 0 16px; color: var(--sub); max-width: 70ch; }
-  section img { display: block; width: 100%; max-width: 1440px; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+  html, body { height: 100%; }
+  body { margin: 0; background: #FFFFFF; color: var(--text); font: 14px/1.5 Inter, system-ui, -apple-system, sans-serif; }
+  .wrap { display: flex; height: 100%; }
+  nav { flex: 0 0 300px; overflow-y: auto; background: var(--side); border-right: 1px solid var(--line); padding: 28px 16px; }
+  nav h1 { margin: 0 4px 4px; font-size: 16px; font-weight: 600; }
+  nav > p { margin: 0 4px 22px; color: var(--sub); font-size: 12.5px; }
+  nav h2 { margin: 0 4px 8px; font-size: 12px; font-weight: 500; color: var(--sub); text-transform: uppercase; letter-spacing: 0.04em; }
+  nav ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  nav a.item { display: grid; grid-template-columns: 20px 1fr; gap: 2px 8px; padding: 10px; border-radius: 8px; color: var(--text); text-decoration: none; }
+  nav a.item:hover { background: #EEF0F5; }
+  nav a.item[aria-current="page"] { background: #FFFFFF; box-shadow: 0 0 0 1px var(--line); }
+  nav a.item .n { color: var(--sub); font-variant-numeric: tabular-nums; }
+  nav a.item .t { font-weight: 500; }
+  nav a.item .d { grid-column: 2; color: var(--sub); font-size: 12.5px; }
+  main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .bar strong { font-weight: 600; }
+  .bar a { color: var(--accent); text-decoration: none; font-weight: 500; white-space: nowrap; }
+  .bar a:hover { text-decoration: underline; }
+  iframe { flex: 1; width: 100%; border: 0; }
   a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .ctl { display: flex; gap: 8px; margin: 0 0 12px; }
-  .ctl button { font: 500 12.5px Inter, system-ui, sans-serif; color: var(--text); background: #FFFFFF; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
-  .ctl button:hover { background: #F2F4F9; }
-  .list { max-width: 736px; display: flex; flex-direction: column; gap: 12px; }
-  .ins { border: 1px solid var(--line); border-radius: 8px; padding: 20px; background: #FFFFFF; cursor: pointer; }
-  .ins h3 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; }
-  .ins .hd { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 16px; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-  .ins:hover .t { color: var(--accent); }
-  .ins .hd:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-  .ins .tog { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 500; color: var(--accent); }
-  .ins .tog svg { transition: transform 160ms; }
-  .ins.open .tog svg { transform: rotate(180deg); }
-  .ins .hide, .ins.open .show { display: none; }
-  .ins.open .hide { display: inline; }
-  .ins p.body { margin: 8px 0 0; color: #1E2746; font-size: 13.5px; line-height: 1.6; max-width: 68ch; }
-  .ins p.body strong { font-weight: 600; color: #0B1020; }
-  .ins .chart { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); cursor: default; }
-  section .ins .chart img { border: 0; border-radius: 0; max-width: 100%; }
   @media (max-width: 800px) {
-    .wrap { display: block; }
-    nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 20px 16px; }
-    main { padding: 24px 16px 60px; }
+    .wrap { display: block; height: auto; }
+    nav { border-right: 0; border-bottom: 1px solid var(--line); padding: 20px 16px; }
+    main { height: 100vh; }
   }
 </style>
 </head>
@@ -53,103 +41,34 @@
 <div class="wrap">
   <nav aria-label="Contents">
     <h1>Wisdom chat screens</h1>
-    <p>Business insights on Global Superstore 2016, rendered at 1440&nbsp;px.</p>
+    <p>Business insights on Global Superstore 2016. Every page is live HTML: hover the charts, switch them to tables, expand the insights.</p>
     <h2>Contents</h2>
     <ol>
-      <li><a href="#original"><span>1</span>Original Wisdom chat: insights in charts</a></li>
-      <li><a href="#no-charts"><span>2</span>Chat answer without charts</a></li>
-      <li><a href="#redesign"><span>3</span>Redesigned chat answer with charts</a></li>
-      <li><a href="#expandable"><span>4</span>Redesign with expandable charts</a></li>
+      <li><a class="item" href="#1-original" data-src="1-original.html"><span class="n">1</span><span class="t">Original Wisdom chat: insights in charts</span><span class="d">Four Wisdom charts, then the business takeaways</span></a></li>
+      <li><a class="item" href="#2-no-charts" data-src="2-no-charts.html"><span class="n">2</span><span class="t">Chat answer without charts</span><span class="d">KPI tiles and nine text-only findings</span></a></li>
+      <li><a class="item" href="#3-redesign" data-src="3-redesign.html"><span class="n">3</span><span class="t">Redesigned chat answer with charts</span><span class="d">Each finding with its chart in the same card</span></a></li>
+      <li><a class="item" href="#4-expandable" data-src="4-expandable.html"><span class="n">4</span><span class="t">Redesign with expandable charts</span><span class="d">Click a finding’s title to show or hide its chart</span></a></li>
     </ol>
   </nav>
   <main>
-    <section id="original">
-      <h2>1. Original Wisdom chat: insights in charts</h2>
-      <p>A render of the original Wisdom answer to “i want a set of descriptive insights about this business, in charts”: four charts, then the business takeaways.</p>
-      <img src="1-original-wisdom-chat-insights-in-charts.png" alt="Original Wisdom chat answer with four charts followed by business takeaways" loading="lazy">
-    </section>
-    <section id="no-charts">
-      <h2>2. Chat answer without charts</h2>
-      <p>A render of the Wisdom answer to “i want a set of descriptive insights about this business, not charts”: KPI tiles and nine text-only findings.</p>
-      <img src="2-chat-answer-without-charts.png" alt="Chat answer with KPI tiles and nine text findings" loading="lazy">
-    </section>
-    <section id="redesign">
-      <h2>3. Redesigned chat answer with charts</h2>
-      <p>The redesign: the same findings as screen 2, each with its chart in the same card.</p>
-      <img src="3-redesigned-chat-answer-with-charts.png" alt="Redesigned chat answer with a chart inside each finding card" loading="lazy">
-    </section>
-    <section id="expandable">
-      <h2>4. Redesign with expandable charts</h2>
-      <p>The same nine findings as screen 3, with charts collapsed. Click a finding to show or hide its chart.</p>
-      <div class="ctl"><button type="button" data-all="open">Expand all</button><button type="button" data-all="close">Collapse all</button></div>
-      <div class="list">
-        <div class="ins" data-i="1">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-1"><span class="t">Business growth outpaced sales</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Annual sales rose <strong>90.3%</strong> from 2012 to 2015, while profit rose <strong>102.5%</strong>. That is equivalent to compound annual growth of <strong>23.9%</strong> for sales and <strong>26.5%</strong> for profit.</p>
-          <div class="chart" id="ch-1" hidden><img src="4-chart-1.png" alt="Chart: Sales and profit growth, indexed to 2012"></div>
-        </div>
-        <div class="ins" data-i="2">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-2"><span class="t">Asia Pacific leads sales, Europe leads profit</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Asia Pacific is the largest market at <strong>$4.04M</strong>, or <strong>32.0%</strong> of total sales, but its <strong>10.0%</strong> margin trails Europe. Europe generated <strong>$3.29M</strong> in sales, <strong>$449.6K</strong> in profit, and a <strong>13.7%</strong> margin, making it the strongest market by absolute profit. USCA also outperformed the company margin at <strong>12.9%</strong>.</p>
-          <div class="chart" id="ch-2" hidden><img src="4-chart-2.png" alt="Chart: Sales and profit margin by market"></div>
-        </div>
-        <div class="ins" data-i="3">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-3"><span class="t">Geographic performance is uneven</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Eastern Europe, North Africa, Central Africa, and Canada each produced margins near or above <strong>24%</strong>, although on relatively modest sales bases. Western Asia, Western Africa, and Central Asia lost a combined <strong>$111.6K</strong>. Southeastern Asia is another concern: it produced <strong>$884.4K</strong> in sales but only a <strong>2.0%</strong> margin; South America’s margin was <strong>4.6%</strong>. These are meaningful opportunities for pricing, product-mix, and discount reviews.</p>
-          <div class="chart" id="ch-3" hidden><img src="4-chart-3.png" alt="Chart: Profit margin by region"></div>
-        </div>
-        <div class="ins" data-i="4">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-4"><span class="t">Technology is strongest; Furniture is the weak link</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Technology led with <strong>$4.74M</strong> in sales, <strong>$663.8K</strong> in profit, and a <strong>14.0%</strong> margin. Office Supplies was close on margin at <strong>13.7%</strong> and accounted for <strong>108,244</strong> units, about <strong>61%</strong> of all units sold. Furniture generated <strong>$4.11M</strong> in sales but only a <strong>6.9%</strong> margin. Within Furniture, Tables lost <strong>$64.1K</strong> on <strong>$757.0K</strong> of sales, making it the only loss-making sub-category.</p>
-          <div class="chart" id="ch-4" hidden><img src="4-chart-4.png" alt="Chart: Profit by sub-category"></div>
-        </div>
-        <div class="ins" data-i="5">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-5"><span class="t">Discounting is the clearest profitability risk</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Undiscounted transactions produced <strong>55.3%</strong> of sales but <strong>$1.77M</strong> in profit, more than the company’s net profit after discounted losses, at a <strong>25.3%</strong> margin. Sales discounted above <strong>20%</strong> totaled <strong>$1.93M</strong> yet collectively lost <strong>$814.7K</strong>. The &gt;50% band was especially destructive: <strong>$371.6K</strong> in sales generated a <strong>$412.6K</strong> loss, a <strong>-111.0%</strong> margin. This is descriptive rather than causal, but the relationship is strong enough to justify immediate policy review.</p>
-          <div class="chart" id="ch-5" hidden><img src="4-chart-5.png" alt="Chart: Profit margin by discount level"></div>
-        </div>
-        <div class="ins" data-i="6">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-6"><span class="t">Segment differences are mostly size, not economics</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Consumers represented <strong>51.5%</strong> of sales and generated <strong>$749.2K</strong> in profit. Corporate and Home Office were smaller, but all three segment margins were tightly grouped between <strong>11.5%</strong> and <strong>12.0%</strong>. Segment-level pricing or cost differences therefore appear limited compared with the much larger variation by geography, sub-category, and discount level.</p>
-          <div class="chart" id="ch-6" hidden><img src="4-chart-6.png" alt="Chart: Segment size and margin"></div>
-        </div>
-        <div class="ins" data-i="7">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-7"><span class="t">Faster shipping costs more without changing margin much</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">Standard Class accounted for <strong>59.9%</strong> of sales, averaged <strong>5.00</strong> delivery days, and had average line-item shipping cost of <strong>$20.09</strong>. Same Day averaged near-zero elapsed days but cost <strong>$43.00</strong> per line item. Despite this difference, margins were similar: <strong>11.8%</strong> for Standard Class and <strong>11.4%</strong> for Same Day. The expedited modes do not appear to create a margin premium at the aggregate level.</p>
-          <div class="chart" id="ch-7" hidden><img src="4-chart-7.png" alt="Chart: Ship mode cost, speed and margin"></div>
-        </div>
-        <div class="ins" data-i="8">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-8"><span class="t">Revenue is not concentrated in a few customers</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">The ten highest-sales customers contributed only <strong>1.08%</strong> of company sales, indicating a highly diversified customer base. High sales do not always imply good economics: the largest customer by sales, Sean Miller, generated <strong>$23.7K</strong> in sales but lost <strong>$1.8K</strong>; Becky Martin, ranked eighth by sales, lost <strong>$1.9K</strong>.</p>
-          <div class="chart" id="ch-8" hidden><img src="4-chart-8.png" alt="Chart: Top customers by sales and profit"></div>
-        </div>
-        <div class="ins" data-i="9">
-          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-9"><span class="t">A few products stand out at both extremes</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
-          <p class="body">The Canon imageCLASS 2200 Advanced Copier was the most profitable product, generating <strong>$25.2K</strong> of profit from <strong>$61.6K</strong> in sales. At the other extreme, the Cubify CubeX 3D Printer Double Head Print lost <strong>$8.9K</strong> on <strong>$11.1K</strong> in sales. Several tables and 3D printers appear among the lowest-profit products, reinforcing the category-level loss pattern.</p>
-          <div class="chart" id="ch-9" hidden><img src="4-chart-9.png" alt="Chart: Most and least profitable products"></div>
-        </div>
-      </div>
-    </section>
+    <div class="bar"><strong id="cur">Original Wisdom chat: insights in charts</strong><a id="open" href="1-original.html" target="_blank" rel="noopener">Open full page ↗</a></div>
+    <iframe id="view" src="1-original.html" title="Selected screen"></iframe>
   </main>
 </div>
 <script>
-function setOpen(card, open) {
-  card.classList.toggle("open", open);
-  card.querySelector(".hd").setAttribute("aria-expanded", String(open));
-  card.querySelector(".chart").hidden = !open;
-}
-document.querySelectorAll("#expandable .ins").forEach(function (card) {
-  card.addEventListener("click", function (e) {
-    if (e.target.closest(".chart")) return;
-    setOpen(card, !card.classList.contains("open"));
-  });
-});
-document.querySelectorAll(".ctl button").forEach(function (b) {
-  b.addEventListener("click", function () {
-    var open = b.dataset.all === "open";
-    document.querySelectorAll("#expandable .ins").forEach(function (card) { setOpen(card, open); });
-  });
-});
+  var items = document.querySelectorAll('nav a.item');
+  function show(hash) {
+    var a = document.querySelector('nav a.item[href="' + hash + '"]') || items[0];
+    items.forEach(function (x) { x.removeAttribute('aria-current'); });
+    a.setAttribute('aria-current', 'page');
+    var src = a.dataset.src;
+    var view = document.getElementById('view');
+    if (view.getAttribute('src') !== src) view.setAttribute('src', src);
+    document.getElementById('open').href = src;
+    document.getElementById('cur').textContent = a.querySelector('.t').textContent;
+  }
+  window.addEventListener('hashchange', function () { show(location.hash); });
+  show(location.hash);
 </script>
 </body>
 </html>
