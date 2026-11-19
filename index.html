@@ -24,6 +24,24 @@
   section p { margin: 0 0 16px; color: var(--sub); max-width: 70ch; }
   section img { display: block; width: 100%; max-width: 1440px; height: auto; border: 1px solid var(--line); border-radius: 8px; }
   a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ctl { display: flex; gap: 8px; margin: 0 0 12px; }
+  .ctl button { font: 500 12.5px Inter, system-ui, sans-serif; color: var(--text); background: #FFFFFF; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+  .ctl button:hover { background: #F2F4F9; }
+  .list { max-width: 736px; display: flex; flex-direction: column; gap: 12px; }
+  .ins { border: 1px solid var(--line); border-radius: 8px; padding: 20px; background: #FFFFFF; cursor: pointer; }
+  .ins h3 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; }
+  .ins .hd { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 16px; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .ins:hover .t { color: var(--accent); }
+  .ins .hd:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+  .ins .tog { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 500; color: var(--accent); }
+  .ins .tog svg { transition: transform 160ms; }
+  .ins.open .tog svg { transform: rotate(180deg); }
+  .ins .hide, .ins.open .show { display: none; }
+  .ins.open .hide { display: inline; }
+  .ins p.body { margin: 8px 0 0; color: #1E2746; font-size: 13.5px; line-height: 1.6; max-width: 68ch; }
+  .ins p.body strong { font-weight: 600; color: #0B1020; }
+  .ins .chart { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); cursor: default; }
+  section .ins .chart img { border: 0; border-radius: 0; max-width: 100%; }
   @media (max-width: 800px) {
     .wrap { display: block; }
     nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 20px 16px; }
@@ -41,6 +59,7 @@
       <li><a href="#original"><span>1</span>Original Wisdom chat: insights in charts</a></li>
       <li><a href="#no-charts"><span>2</span>Chat answer without charts</a></li>
       <li><a href="#redesign"><span>3</span>Redesigned chat answer with charts</a></li>
+      <li><a href="#expandable"><span>4</span>Redesign with expandable charts</a></li>
     </ol>
   </nav>
   <main>
@@ -59,7 +78,78 @@
       <p>The redesign: the same findings as screen 2, each with its chart in the same card.</p>
       <img src="3-redesigned-chat-answer-with-charts.png" alt="Redesigned chat answer with a chart inside each finding card" loading="lazy">
     </section>
+    <section id="expandable">
+      <h2>4. Redesign with expandable charts</h2>
+      <p>The same nine findings as screen 3, with charts collapsed. Click a finding to show or hide its chart.</p>
+      <div class="ctl"><button type="button" data-all="open">Expand all</button><button type="button" data-all="close">Collapse all</button></div>
+      <div class="list">
+        <div class="ins" data-i="1">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-1"><span class="t">Business growth outpaced sales</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Annual sales rose <strong>90.3%</strong> from 2012 to 2015, while profit rose <strong>102.5%</strong>. That is equivalent to compound annual growth of <strong>23.9%</strong> for sales and <strong>26.5%</strong> for profit.</p>
+          <div class="chart" id="ch-1" hidden><img src="4-chart-1.png" alt="Chart: Sales and profit growth, indexed to 2012"></div>
+        </div>
+        <div class="ins" data-i="2">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-2"><span class="t">Asia Pacific leads sales, Europe leads profit</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Asia Pacific is the largest market at <strong>$4.04M</strong>, or <strong>32.0%</strong> of total sales, but its <strong>10.0%</strong> margin trails Europe. Europe generated <strong>$3.29M</strong> in sales, <strong>$449.6K</strong> in profit, and a <strong>13.7%</strong> margin, making it the strongest market by absolute profit. USCA also outperformed the company margin at <strong>12.9%</strong>.</p>
+          <div class="chart" id="ch-2" hidden><img src="4-chart-2.png" alt="Chart: Sales and profit margin by market"></div>
+        </div>
+        <div class="ins" data-i="3">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-3"><span class="t">Geographic performance is uneven</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Eastern Europe, North Africa, Central Africa, and Canada each produced margins near or above <strong>24%</strong>, although on relatively modest sales bases. Western Asia, Western Africa, and Central Asia lost a combined <strong>$111.6K</strong>. Southeastern Asia is another concern: it produced <strong>$884.4K</strong> in sales but only a <strong>2.0%</strong> margin; South America’s margin was <strong>4.6%</strong>. These are meaningful opportunities for pricing, product-mix, and discount reviews.</p>
+          <div class="chart" id="ch-3" hidden><img src="4-chart-3.png" alt="Chart: Profit margin by region"></div>
+        </div>
+        <div class="ins" data-i="4">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-4"><span class="t">Technology is strongest; Furniture is the weak link</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Technology led with <strong>$4.74M</strong> in sales, <strong>$663.8K</strong> in profit, and a <strong>14.0%</strong> margin. Office Supplies was close on margin at <strong>13.7%</strong> and accounted for <strong>108,244</strong> units, about <strong>61%</strong> of all units sold. Furniture generated <strong>$4.11M</strong> in sales but only a <strong>6.9%</strong> margin. Within Furniture, Tables lost <strong>$64.1K</strong> on <strong>$757.0K</strong> of sales, making it the only loss-making sub-category.</p>
+          <div class="chart" id="ch-4" hidden><img src="4-chart-4.png" alt="Chart: Profit by sub-category"></div>
+        </div>
+        <div class="ins" data-i="5">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-5"><span class="t">Discounting is the clearest profitability risk</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Undiscounted transactions produced <strong>55.3%</strong> of sales but <strong>$1.77M</strong> in profit, more than the company’s net profit after discounted losses, at a <strong>25.3%</strong> margin. Sales discounted above <strong>20%</strong> totaled <strong>$1.93M</strong> yet collectively lost <strong>$814.7K</strong>. The &gt;50% band was especially destructive: <strong>$371.6K</strong> in sales generated a <strong>$412.6K</strong> loss, a <strong>-111.0%</strong> margin. This is descriptive rather than causal, but the relationship is strong enough to justify immediate policy review.</p>
+          <div class="chart" id="ch-5" hidden><img src="4-chart-5.png" alt="Chart: Profit margin by discount level"></div>
+        </div>
+        <div class="ins" data-i="6">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-6"><span class="t">Segment differences are mostly size, not economics</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Consumers represented <strong>51.5%</strong> of sales and generated <strong>$749.2K</strong> in profit. Corporate and Home Office were smaller, but all three segment margins were tightly grouped between <strong>11.5%</strong> and <strong>12.0%</strong>. Segment-level pricing or cost differences therefore appear limited compared with the much larger variation by geography, sub-category, and discount level.</p>
+          <div class="chart" id="ch-6" hidden><img src="4-chart-6.png" alt="Chart: Segment size and margin"></div>
+        </div>
+        <div class="ins" data-i="7">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-7"><span class="t">Faster shipping costs more without changing margin much</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">Standard Class accounted for <strong>59.9%</strong> of sales, averaged <strong>5.00</strong> delivery days, and had average line-item shipping cost of <strong>$20.09</strong>. Same Day averaged near-zero elapsed days but cost <strong>$43.00</strong> per line item. Despite this difference, margins were similar: <strong>11.8%</strong> for Standard Class and <strong>11.4%</strong> for Same Day. The expedited modes do not appear to create a margin premium at the aggregate level.</p>
+          <div class="chart" id="ch-7" hidden><img src="4-chart-7.png" alt="Chart: Ship mode cost, speed and margin"></div>
+        </div>
+        <div class="ins" data-i="8">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-8"><span class="t">Revenue is not concentrated in a few customers</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">The ten highest-sales customers contributed only <strong>1.08%</strong> of company sales, indicating a highly diversified customer base. High sales do not always imply good economics: the largest customer by sales, Sean Miller, generated <strong>$23.7K</strong> in sales but lost <strong>$1.8K</strong>; Becky Martin, ranked eighth by sales, lost <strong>$1.9K</strong>.</p>
+          <div class="chart" id="ch-8" hidden><img src="4-chart-8.png" alt="Chart: Top customers by sales and profit"></div>
+        </div>
+        <div class="ins" data-i="9">
+          <h3><button type="button" class="hd" aria-expanded="false" aria-controls="ch-9"><span class="t">A few products stand out at both extremes</span><span class="tog"><span class="show">Show chart</span><span class="hide">Hide chart</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button></h3>
+          <p class="body">The Canon imageCLASS 2200 Advanced Copier was the most profitable product, generating <strong>$25.2K</strong> of profit from <strong>$61.6K</strong> in sales. At the other extreme, the Cubify CubeX 3D Printer Double Head Print lost <strong>$8.9K</strong> on <strong>$11.1K</strong> in sales. Several tables and 3D printers appear among the lowest-profit products, reinforcing the category-level loss pattern.</p>
+          <div class="chart" id="ch-9" hidden><img src="4-chart-9.png" alt="Chart: Most and least profitable products"></div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
+<script>
+function setOpen(card, open) {
+  card.classList.toggle("open", open);
+  card.querySelector(".hd").setAttribute("aria-expanded", String(open));
+  card.querySelector(".chart").hidden = !open;
+}
+document.querySelectorAll("#expandable .ins").forEach(function (card) {
+  card.addEventListener("click", function (e) {
+    if (e.target.closest(".chart")) return;
+    setOpen(card, !card.classList.contains("open"));
+  });
+});
+document.querySelectorAll(".ctl button").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var open = b.dataset.all === "open";
+    document.querySelectorAll("#expandable .ins").forEach(function (card) { setOpen(card, open); });
+  });
+});
+</script>
 </body>
 </html>
