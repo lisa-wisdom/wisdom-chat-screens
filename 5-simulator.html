@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulation: impact of management priorities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --text: #0B1020; --body: #1E2746; --sub: #4A5578; --muted: #6B6B6B;
+    --line: #E4E8F2; --soft: #F7F8FA; --accent: #5263FF;
+    --total: #1B66C4; --up: #219855; --down: #E04243; --grid: #DBDFE9; --axis: #787E8A;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #FFFFFF; color: var(--body); font: 14px/1.5 Inter, system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 32px 32px 64px; }
+  header h1 { margin: 0 0 6px; font-size: 22px; line-height: 1.3; font-weight: 600; color: var(--text); }
+  header p { margin: 0; color: var(--sub); max-width: 78ch; }
+  .layout { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 32px; margin-top: 28px; align-items: start; }
+  .levers { display: flex; flex-direction: column; gap: 12px; }
+  .lever { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; background: #FFFFFF; }
+  .lever.off { background: var(--soft); }
+  .lever.off .ctrl, .lever.off .delta { opacity: 0.45; }
+  .lever-head { display: flex; align-items: flex-start; gap: 10px; }
+  .lever-head input[type=checkbox] { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+  .lever-head label { flex: 1; font-weight: 600; color: var(--text); line-height: 1.4; cursor: pointer; }
+  .lever-head .n { color: var(--sub); font-weight: 500; margin-right: 4px; }
+  .delta { flex: none; font-weight: 600; white-space: nowrap; }
+  .delta.pos { color: var(--up); } .delta.neg { color: var(--down); } .delta.zero { color: var(--sub); }
+  .fact { margin: 6px 0 0 26px; font-size: 12.5px; color: var(--sub); }
+  .ctrl { margin: 12px 0 0 26px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; font-size: 12.5px; }
+  .row label { color: var(--body); }
+  .row output { font-weight: 600; color: var(--text); min-width: 44px; text-align: right; }
+  .row input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); margin: 2px 0 0; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; padding: 2px; gap: 2px; background: var(--soft); }
+  .seg label { font-size: 12.5px; padding: 4px 10px; border-radius: 6px; cursor: pointer; color: var(--sub); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg input:checked + span { color: var(--text); }
+  .seg label:has(input:checked) { background: #FFFFFF; box-shadow: 0 0 0 1px var(--line); color: var(--text); }
+  .seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .assume { font-size: 12px; color: var(--muted); }
+  .right { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .kpi { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .kpi .k { font-size: 13px; font-weight: 500; color: var(--body); }
+  .kpi .v { font-size: 26px; line-height: 34px; letter-spacing: -0.02em; color: var(--text); }
+  .kpi .s { font-size: 12.5px; color: var(--sub); }
+  .kpi .s b { font-weight: 600; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 20px 20px 16px; }
+  .card h2 { margin: 0; font-size: 14px; font-weight: 600; color: #6B6B6B; }
+  .card .sub { margin: 4px 0 0; font-size: 13px; color: #6B6B6B; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 14px 0 6px; font-size: 12.5px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; display: inline-block; }
+  #chart { position: relative; }
+  #chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .tip { position: absolute; pointer-events: none; background: #FFFFFF; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 4px 14px rgba(20,26,51,0.12); padding: 10px 12px; font-size: 12px; min-width: 190px; z-index: 5; }
+  .tip b { display: block; font-size: 12.5px; color: var(--text); margin-bottom: 4px; }
+  .tip div { display: flex; justify-content: space-between; gap: 14px; color: var(--sub); line-height: 18px; }
+  .tip div span:last-child { color: var(--text); font-weight: 500; }
+  .note { border-radius: 8px; background: var(--soft); padding: 14px 18px; font-size: 12.5px; color: var(--sub); }
+  .note b { color: var(--body); font-weight: 600; }
+  .note ul { margin: 6px 0 0; padding-left: 18px; }
+  .note li { margin: 2px 0; }
+  button.reset { font: 500 12.5px Inter, system-ui, sans-serif; color: var(--accent); background: transparent; border: 0; padding: 4px 0; cursor: pointer; align-self: flex-start; }
+  button.reset:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 980px) {
+    .page { padding: 24px 16px 48px; }
+    .layout { grid-template-columns: 1fr; }
+    .right { position: static; order: -1; }
+    .kpis { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Simulation: impact of management priorities</h1>
+    <p>Each recommendation from the chat is a lever. Turn levers on and off and adjust their assumptions to see how much each one moves profit, starting from 2012–2015 actuals for Global Superstore.</p>
+  </header>
+
+  <div class="layout">
+    <section class="levers" aria-label="Management decisions">
+
+      <div class="lever" data-lever="discount">
+        <div class="lever-head"><input type="checkbox" id="on-discount" checked><label for="on-discount"><span class="n">1</span>Tighten or require approval for discounts above 20%</label><span class="delta" id="d-discount"></span></div>
+        <p class="fact">Today: $1.93M of sales at discounts above 20% lose $814.7K.</p>
+        <div class="ctrl">
+          <div class="row"><label for="keep">Share of those deals kept at a 20% discount</label><output id="keep-o"></output><input type="range" id="keep" min="0" max="100" step="5" value="70"></div>
+          <p class="assume">The rest are lost. Kept deals pay list price less 20%. Band discounts are taken at their midpoints (25%, 35%, 45%, and 60% for over 50%). Even at a 20% discount these deals roughly break even, so most of the gain comes from ending the losses, not from the volume kept.</p>
+        </div>
+      </div>
+
+      <div class="lever" data-lever="regions">
+        <div class="lever-head"><input type="checkbox" id="on-regions" checked><label for="on-regions"><span class="n">2</span>Fix Western Asia, Western Africa, Central Asia and Southeastern Asia</label><span class="delta" id="d-regions"></span></div>
+        <p class="fact">Today: the first three lose $111.6K; Southeastern Asia earns a 2.0% margin on $884.4K.</p>
+        <div class="ctrl">
+          <div class="row"><label for="close">Margin gap closed toward the 11.6% company average</label><output id="close-o"></output><input type="range" id="close" min="0" max="100" step="5" value="50"></div>
+          <p class="assume">Product and discount mix changes; sales stay the same.</p>
+        </div>
+      </div>
+
+      <div class="lever" data-lever="tables">
+        <div class="lever-head"><input type="checkbox" id="on-tables" checked><label for="on-tables"><span class="n">3</span>Reprice or cut Tables</label><span class="delta" id="d-tables"></span></div>
+        <p class="fact">Today: Tables lose $64.1K on $757.0K of sales.</p>
+        <div class="ctrl">
+          <div class="seg" role="radiogroup" aria-label="Tables action">
+            <label><input type="radio" name="tables" value="reprice" checked><span>Reprice</span></label>
+            <label><input type="radio" name="tables" value="drop"><span>Discontinue</span></label>
+          </div>
+          <div class="row" id="price-row"><label for="price">Price increase</label><output id="price-o"></output><input type="range" id="price" min="0" max="20" step="1" value="8"></div>
+          <div class="row" id="elas-row"><label for="elas">Volume lost per 1% price increase</label><output id="elas-o"></output><input type="range" id="elas" min="0" max="3" step="0.25" value="1"></div>
+        </div>
+      </div>
+
+      <div class="lever" data-lever="growth">
+        <div class="lever-head"><input type="checkbox" id="on-growth" checked><label for="on-growth"><span class="n">4</span>Protect growth in Technology and Office Supplies</label><span class="delta" id="d-growth"></span></div>
+        <p class="fact">Today: $8.53M of sales at a 13.9% margin, including Copiers and Phones.</p>
+        <div class="ctrl">
+          <div class="row"><label for="growth">Extra sales growth</label><output id="growth-o"></output><input type="range" id="growth" min="0" max="20" step="1" value="5"></div>
+          <p class="assume">New sales earn each category’s current margin (Technology 14.0%, Office Supplies 13.7%).</p>
+        </div>
+      </div>
+
+      <div class="lever" data-lever="customers">
+        <div class="lever-head"><input type="checkbox" id="on-customers" checked><label for="on-customers"><span class="n">5</span>Review unprofitable high-sales customers</label><span class="delta" id="d-customers"></span></div>
+        <p class="fact">Today: 2 of the top 10 customers (Sean Miller, Becky Martin) lose $3.7K on $34.2K.</p>
+        <div class="ctrl">
+          <div class="seg" role="radiogroup" aria-label="Customer action">
+            <label><input type="radio" name="cust" value="fix" checked><span>Fix terms to break even</span></label>
+            <label><input type="radio" name="cust" value="drop"><span>Stop serving</span></label>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="reset" id="reset">Reset to defaults</button>
+    </section>
+
+    <section class="right" aria-label="Results">
+      <div class="kpis">
+        <div class="kpi"><div class="k">Projected profit</div><div class="v" id="k-profit"></div><div class="s" id="k-profit-s"></div></div>
+        <div class="kpi"><div class="k">Projected margin</div><div class="v" id="k-margin"></div><div class="s" id="k-margin-s"></div></div>
+        <div class="kpi"><div class="k">Projected sales</div><div class="v" id="k-sales"></div><div class="s" id="k-sales-s"></div></div>
+      </div>
+      <div class="card">
+        <h2>Profit bridge</h2>
+        <p class="sub">2012–2015 profit, then the change from each decision · USD</p>
+        <div class="legend"><span><i style="background: var(--total)"></i>Profit</span><span><i style="background: var(--up)"></i>Increase</span><span><i style="background: var(--down)"></i>Decrease</span></div>
+        <div id="chart"></div>
+      </div>
+      <div class="note">
+        <b>How to read this.</b> It’s a what-if model built from the chat’s totals, not a forecast.
+        <ul>
+          <li>The chat’s findings are descriptive, so customer reactions are assumptions you set with the sliders.</li>
+          <li>Levers are added independently. Some sales fall under more than one lever (a heavily discounted Tables order in Western Asia counts toward 1, 2 and 3), so turning all of them on overstates the combined effect. An order-level model would remove the overlap.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Totals from the chat (Global Superstore, 2012–2015)
+  var BASE = { s: 12642501.91, p: 1467457.29 };
+  var DEEP = [ // discount bands above 20%: sales, profit, assumed average discount
+    { s: 382554.69, p: -21155.61, d: 0.25 },
+    { s: 701343.12, p: -166115.45, d: 0.35 },
+    { s: 474688.31, p: -214829.37, d: 0.45 },
+    { s: 371624.66, p: -412581.66, d: 0.60 }
+  ];
+  var REGIONS = [
+    { s: 19311.46, p: -7282.01 },   // Central Asia
+    { s: 884423.17, p: 17852.33 },  // Southeastern Asia
+    { s: 173878.81, p: -50407.79 }, // Western Africa
+    { s: 317106.96, p: -53921.67 }  // Western Asia
+  ];
+  var TABLES = { s: 757041.92, p: -64083.39 };
+  var GROW = [{ s: 4744557.5, p: 663778.74 }, { s: 3787492.51, p: 518595.83 }]; // Technology, Office Supplies
+  var CUST = { s: 23669.2 + 10539.9, p: -1787.04 - 1878.79 };
+  var CO_MARGIN = BASE.p / BASE.s;
+
+  var NAMES = {
+    discount: 'Discounts capped at 20%', regions: 'Problem regions fixed', tables: 'Tables repriced or cut',
+    growth: 'Growth protected', customers: 'Unprofitable customers'
+  };
+  var SHORT = { discount: ['Cap', 'discounts'], regions: ['Fix', 'regions'], tables: ['Tables'], growth: ['Protect', 'growth'], customers: ['Review', 'customers'] };
+  var DEFAULTS = { keep: 70, close: 50, price: 8, elas: 1, growth: 5 };
+
+  var $ = function (id) { return document.getElementById(id); };
+  function val(id) { return Number($(id).value); }
+  function radio(name) { return document.querySelector('input[name="' + name + '"]:checked').value; }
+
+  function money(v, dp) {
+    var a = Math.abs(v), sgn = v < 0 ? '−' : '';
+    if (a >= 1e6) return sgn + '$' + (a / 1e6).toFixed(dp == null ? 2 : dp) + 'M';
+    if (a >= 1e3) return sgn + '$' + (a / 1e3).toFixed(1) + 'K';
+    return sgn + '$' + Math.round(a);
+  }
+  function signed(v) { return (v > 0 ? '+' : '') + money(v); }
+  function axMoney(v) { return v === 0 ? '$0' : (v >= 1e6 ? '$' + (+(v / 1e6).toFixed(1)) + 'M' : '$' + Math.round(v / 1e3) + 'K'); }
+  function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+  function compute() {
+    var r = {};
+    // 1. Discount cap
+    var k = val('keep') / 100, dp1 = 0, ds1 = 0;
+    DEEP.forEach(function (b) {
+      var list = b.s / (1 - b.d), cost = b.s - b.p, newRev = list * 0.8, newP = newRev - cost;
+      dp1 += k * newP - b.p;
+      ds1 += k * newRev - b.s;
+    });
+    r.discount = { p: dp1, s: ds1 };
+    // 2. Regions
+    var c = val('close') / 100, dp2 = 0;
+    REGIONS.forEach(function (g) { var m = g.p / g.s; dp2 += g.s * c * (CO_MARGIN - m); });
+    r.regions = { p: dp2, s: 0 };
+    // 3. Tables
+    if (radio('tables') === 'drop') {
+      r.tables = { p: -TABLES.p, s: -TABLES.s };
+    } else {
+      var pr = val('price') / 100, e = val('elas'), vol = Math.max(0, 1 - e * pr);
+      var cost = TABLES.s - TABLES.p, s3 = TABLES.s * (1 + pr) * vol, p3 = s3 - cost * vol;
+      r.tables = { p: p3 - TABLES.p, s: s3 - TABLES.s };
+    }
+    // 4. Growth
+    var g4 = val('growth') / 100;
+    r.growth = { p: g4 * (GROW[0].p + GROW[1].p), s: g4 * (GROW[0].s + GROW[1].s) };
+    // 5. Customers
+    r.customers = radio('cust') === 'drop' ? { p: -CUST.p, s: -CUST.s } : { p: -CUST.p, s: 0 };
+    Object.keys(r).forEach(function (key) {
+      if (!$('on-' + key).checked) r[key] = { p: 0, s: 0, off: true };
+    });
+    return r;
+  }
+
+  function niceMax(v) {
+    var step = Math.pow(10, Math.floor(Math.log10(v)));
+    var steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (var i = 0; i < steps.length; i++) if (steps[i] * step >= v) return steps[i] * step;
+    return 10 * step;
+  }
+
+  var hover = null;
+  function draw(r) {
+    var keys = ['discount', 'regions', 'tables', 'growth', 'customers'];
+    var bars = [{ key: 'base', label: ['2012–15', 'actual'], from: 0, to: BASE.p, kind: 'total' }];
+    var run = BASE.p;
+    keys.forEach(function (key) {
+      var d = r[key].p;
+      bars.push({ key: key, label: SHORT[key], from: run, to: run + d, kind: d >= 0 ? 'up' : 'down', d: d, off: r[key].off });
+      run += d;
+    });
+    bars.push({ key: 'proj', label: ['Projected'], from: 0, to: run, kind: 'total' });
+
+    var W = Math.max(320, $('chart').clientWidth), H = 340, mL = 52, mR = 0, mT = 24, mB = 48;
+    var top = Math.max.apply(null, bars.map(function (b) { return Math.max(b.from, b.to); }));
+    var yMax = niceMax(top * 1.08), ticks = 5;
+    var Y = function (v) { return mT + (1 - v / yMax) * (H - mT - mB); };
+    var band = (W - mL - mR) / bars.length, cw = Math.min(band * 0.6, 72);
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Profit bridge: ' + money(BASE.p) + ' actual to ' + money(run) + ' projected">';
+    for (var i = 0; i <= ticks; i++) {
+      var tv = yMax * i / ticks, ty = Y(tv);
+      if (i > 0) svg += '<line x1="0" x2="' + W + '" y1="' + ty + '" y2="' + ty + '" stroke="#DBDFE9" stroke-dasharray="1 3" stroke-linecap="round"/>';
+      svg += '<text x="0" y="' + (ty - 6) + '" font-size="12" fill="#6B6B6B">' + axMoney(tv) + (i === ticks ? '   Profit' : '') + '</text>';
+    }
+    bars.forEach(function (b, i) {
+      var x = mL + i * band + (band - cw) / 2, y1 = Y(Math.max(b.from, b.to)), y2 = Y(Math.min(b.from, b.to));
+      var h = Math.max(1.5, y2 - y1);
+      var fill = b.kind === 'total' ? '#1B66C4' : (b.kind === 'up' ? '#219855' : '#E04243');
+      var dim = hover != null && hover !== i ? 0.45 : 1;
+      if (b.off) fill = '#C9CFDD';
+      svg += '<rect x="' + x + '" y="' + y1 + '" width="' + cw + '" height="' + h + '" fill="' + fill + '" opacity="' + dim + '"/>';
+      if (i < bars.length - 1) {
+        var ny = Y(b.to);
+        svg += '<line x1="' + (x + cw) + '" x2="' + (x + band) + '" y1="' + ny + '" y2="' + ny + '" stroke="#787E8A" stroke-width="0.75" stroke-dasharray="2 2"/>';
+      }
+      var lab = b.kind === 'total' ? money(b.to) : (b.off ? 'Off' : signed(b.d));
+      var ly = (b.kind === 'down' ? y2 + 15 : y1 - 6);
+      svg += '<text x="' + (x + cw / 2) + '" y="' + ly + '" text-anchor="middle" font-size="12" font-weight="600" fill="' + (b.kind === 'total' ? '#0B1020' : (b.off ? '#6B6B6B' : fill)) + '">' + lab + '</text>';
+      b.label.forEach(function (t, j) {
+        svg += '<text x="' + (x + cw / 2) + '" y="' + (H - mB + 18 + j * 15) + '" text-anchor="middle" font-size="12" fill="#6B6B6B">' + t + '</text>';
+      });
+      svg += '<rect class="hit" data-i="' + i + '" x="' + (mL + i * band) + '" y="' + mT + '" width="' + band + '" height="' + (H - mT - mB) + '" fill="transparent"/>';
+    });
+    svg += '<line x1="0" x2="' + W + '" y1="' + Y(0) + '" y2="' + Y(0) + '" stroke="#787E8A" stroke-width="1"/>';
+    svg += '</svg>';
+    var tip = '';
+    if (hover != null) {
+      var hb = bars[hover], hx = mL + hover * band + band / 2;
+      var title = hb.key === 'base' ? '2012–2015 actual profit' : (hb.key === 'proj' ? 'Projected profit' : NAMES[hb.key]);
+      var rows = hb.kind === 'total'
+        ? [['Profit', money(hb.to)], ['Change vs. actual', hb.key === 'proj' ? signed(hb.to - BASE.p) : '—']]
+        : [['Change', hb.off ? 'Off' : signed(hb.d)], ['Running total', money(hb.to)]];
+      var left = hx + 16 > W - 220 ? hx - 216 : hx + 16;
+      tip = '<div class="tip" style="left:' + left + 'px; top:' + (Y(Math.max(hb.from, hb.to)) - 10) + 'px"><b>' + title + '</b>' +
+        rows.map(function (rw) { return '<div><span>' + rw[0] + '</span><span>' + rw[1] + '</span></div>'; }).join('') + '</div>';
+    }
+    $('chart').innerHTML = svg + tip;
+    $('chart').querySelectorAll('.hit').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { hover = Number(el.dataset.i); update(); });
+      el.addEventListener('mouseleave', function () { hover = null; update(); });
+    });
+  }
+
+  function update() {
+    $('keep-o').textContent = val('keep') + '%';
+    $('close-o').textContent = val('close') + '%';
+    $('price-o').textContent = val('price') + '%';
+    $('elas-o').textContent = val('elas').toFixed(2) + '%';
+    $('growth-o').textContent = val('growth') + '%';
+    var dropTables = radio('tables') === 'drop';
+    $('price-row').hidden = dropTables; $('elas-row').hidden = dropTables;
+
+    var r = compute(), P = BASE.p, S = BASE.s;
+    Object.keys(r).forEach(function (key) {
+      P += r[key].p; S += r[key].s;
+      var el = $('d-' + key), d = r[key].p;
+      el.textContent = r[key].off ? 'Off' : signed(d);
+      el.className = 'delta ' + (r[key].off || Math.abs(d) < 50 ? 'zero' : (d > 0 ? 'pos' : 'neg'));
+      document.querySelector('.lever[data-lever="' + key + '"]').classList.toggle('off', !!r[key].off);
+    });
+    $('k-profit').textContent = money(P);
+    $('k-profit-s').innerHTML = '<b style="color:' + (P >= BASE.p ? '#219855' : '#E04243') + '">' + signed(P - BASE.p) + '</b> vs. ' + money(BASE.p) + ' actual';
+    $('k-margin').textContent = pct(P / S);
+    $('k-margin-s').innerHTML = '<b>' + ((P / S - CO_MARGIN) >= 0 ? '+' : '−') + (Math.abs(P / S - CO_MARGIN) * 100).toFixed(1) + ' pts</b> vs. ' + pct(CO_MARGIN) + ' actual';
+    $('k-sales').textContent = money(S);
+    $('k-sales-s').innerHTML = '<b>' + signed(S - BASE.s) + '</b> vs. ' + money(BASE.s) + ' actual';
+    draw(r);
+  }
+
+  document.querySelectorAll('input').forEach(function (el) { el.addEventListener('input', update); el.addEventListener('change', update); });
+  $('reset').addEventListener('click', function () {
+    Object.keys(DEFAULTS).forEach(function (id) { $(id).value = DEFAULTS[id]; });
+    document.querySelectorAll('.lever-head input[type=checkbox]').forEach(function (c) { c.checked = true; });
+    document.querySelector('input[name="tables"][value="reprice"]').checked = true;
+    document.querySelector('input[name="cust"][value="fix"]').checked = true;
+    update();
+  });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>
