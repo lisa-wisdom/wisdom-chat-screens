@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proposed chat: narrative insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#1E2746}a:hover{color:#544AEF}
+strong{font-weight:600;color:#0B1020}
+.wc-bar{animation:wcGrowX 520ms cubic-bezier(0.2,0.7,0.2,1) both;transition:background-color 120ms}
+.wc-col{animation:wcGrowY 520ms cubic-bezier(0.2,0.7,0.2,1) both;transition:background-color 120ms}
+.wc-draw{animation:wcFade 520ms ease-out both}
+.wc-fade{animation:wcFade 520ms ease-out both}
+.wc-dot{transition:opacity 120ms,width 120ms,height 120ms,left 120ms,top 120ms}
+@keyframes wcGrowX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes wcGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes wcDraw{to{stroke-dashoffset:0}}
+@keyframes wcFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.wc-bar,.wc-col{animation:wcFade 200ms both}.wc-draw{animation:none}}
+.wc-hit:focus-visible,.wc-dot:focus-visible{outline:2px solid #544AEF;outline-offset:-2px}
+:root{--wd-fg-primary:oklch(.2 .012904 274);--wd-fg-tertiary:oklch(.75 .016492 274);--wd-bg-surface:oklch(.994048 .00119 274);--wd-border-default:color-mix(in srgb, oklch(.23 .012907 274) 16%, transparent);--wd-bg-hover:color-mix(in srgb, oklch(.23 .012907 274) 6%, transparent);--wd-bg-pressed:oklch(.9 .006963 274);--wd-focus:oklch(.4 .019811 274)}
+/* wisdom/design Button: secondary, size S; ghost for icon-only */
+.wd-btn{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;box-sizing:border-box;height:28px;padding:0 8px;border:1px solid var(--wd-border-default);border-radius:8px;background-color:var(--wd-bg-surface);font:400 14px/20px 'Inter Variable',Inter,system-ui,sans-serif;color:var(--wd-fg-primary);white-space:nowrap;cursor:pointer}
+.wd-btn:hover:not(:disabled){background-image:linear-gradient(var(--wd-bg-hover),var(--wd-bg-hover))}
+.wd-btn:active:not(:disabled){background-color:var(--wd-bg-pressed);background-image:none}
+.wd-btn:disabled{color:var(--wd-fg-tertiary);cursor:not-allowed}
+.wd-btn:focus-visible{outline:2px solid var(--wd-focus);outline-offset:3px}
+.wd-ghost{width:28px;padding:0;border-color:transparent;background-color:transparent}
+.wc-ghost:hover{background:#F2F4F9 !important}
+.wc-nav:hover{background:#EEF0F5}
+.wc-link:hover{background:#EDEBFE !important}
+.wc-src:hover{color:#544AEF !important}
+.wc-fol:hover{text-decoration-color:#544AEF !important}
+button:focus-visible,a:focus-visible{outline:2px solid #544AEF;outline-offset:2px}
+@media (max-width: 760px){.wc-side-extra{display:none !important}}
+</style>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template"><div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Inter, 'Avenir Next LT Pro', system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #1E2746; background: #FFFFFF">
+
+<nav aria-label="Workspace" style="flex: 1 1 240px; max-width: 100%; box-sizing: border-box; background: #F7F8FA; border-right: 1px solid #EEF0F5; padding: 16px 12px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 6px">
+<div style="display: flex; align-items: center; gap: 8px"><img src="wisdom-logo.png" alt="" style="width: 22px; height: 24px; object-fit: contain"><span style="font-size: 17px; font-weight: 600; color: #0B1020; letter-spacing: -0.01em">WisdomAI</span></div>
+<button type="button" class="wc-ghost" aria-label="Collapse sidebar" style="width: 28px; height: 28px; border: 0; border-radius: 6px; background: transparent; color: #4A5578; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M9 3v18"></path></svg></button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px"><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg><span style="flex: 1">New chat</span><span style="font-size: 11px; color: #6B7699; background: #EEF0F5; border-radius: 4px; padding: 1px 5px">⌘ ⇧ O</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span style="flex: 1">Search</span><span style="font-size: 11px; color: #6B7699; background: #EEF0F5; border-radius: 4px; padding: 1px 5px">⌘ K</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"></path><circle cx="12" cy="12" r="3"></circle></svg><span style="flex: 1">Owls</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg><span style="flex: 1">Apps</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 8V4H8"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg><span style="flex: 1">Agents</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg><span style="flex: 1">Domains</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg><span style="flex: 1">Connections</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path></svg><span style="flex: 1">Chat Log</span></a><a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: #1E2746; text-decoration: none; font-size: 13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg><span style="flex: 1">More</span></a></div>
+<div class="wc-side-extra" style="display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px 6px; font-size: 12px; color: #6B7699"><span>Recent chats</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg></div>
+<a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Product lines causing profit de…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Descriptive business insights …</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Descriptive business insights i…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #E9EBF1; color: #0B1020">Descriptive business insights i…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Market focus and business insi…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Key insights from the data</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Dataset exploration and custo…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Clone of High cardinality scatt…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Ceo dashboard and discount i…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Data visualization and trend in…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Domain info and GDP per capit…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Scatter and bubble charts by c…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Dataset exploration and separ…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Request for five chart visualiza…</a><a href="#" class="wc-nav" style="display: block; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #4A5578; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Csv leaderboard of billionaires…</a>
+</div>
+<div class="wc-side-extra" style="margin-top: auto; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #EEF0F5; padding-top: 12px">
+<a href="#" class="wc-nav" style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; font-size: 13px; color: #1E2746; text-decoration: none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>Notifications</a>
+<div style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; font-size: 13px"><span style="width: 20px; height: 20px; border-radius: 5px; background: #E4E8F2; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">W</span>WisdomAI</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 7px 10px; font-size: 13px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #C2E85C; color: #20235F; font-size: 10px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center">LS</span>Lisa Strausfeld</div>
+</div>
+</nav>
+
+<main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #F2F4F9; flex-wrap: wrap">
+<button type="button" class="wc-ghost" style="display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; font: 500 13.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #1E2746; padding: 4px 6px; border-radius: 6px">Descriptive business insights<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button>
+<div style="display: flex; gap: 4px; color: #4A5578"><button type="button" class="wc-ghost" aria-label="About this chat" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></button><button type="button" class="wc-ghost" aria-label="Share chat" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.59 13.51 6.83 3.98"></path><path d="m15.41 6.51-6.82 3.98"></path></svg></button></div>
+</header>
+
+<div style="width: 100%; max-width: 784px; margin: 0 auto; box-sizing: border-box; padding: 28px 24px 0; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: flex-end"><div style="max-width: 80%; background: #F2F4F9; border-radius: 16px; padding: 10px 16px; font-size: 13.5px; line-height: 1.5; color: #0B1020">Give me a set of descriptive insights about this business</div></div>
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6B7699"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>Queried and computed business performance summaries</div>
+
+<section aria-labelledby="sum-h" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+<h2 id="sum-h" style="margin: 0; font-size: 16px; font-weight: 600; color: #0B1020">Business insights summary</h2>
+<div style="display: flex; gap: 2px; color: #4A5578"><button type="button" class="wc-ghost" aria-label="Open full screen" style="width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></button><button type="button" class="wc-ghost" aria-label="Save to dashboard" style="width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></button><button type="button" class="wc-ghost" aria-label="Share" style="width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.59 13.51 6.83 3.98"></path><path d="m15.41 6.51-6.82 3.98"></path></svg></button></div>
+</div>
+<div style="font-size: 13px; color: #6B7699">Business profile</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px">
+<div style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 13px; color: #1E2746; font-weight: 500">Sales</div>
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="font-size: 30px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; color: #0B1020">$12.64M</div>
+
+</div>
+<div style="font-size: 12.5px; color: #4A5578">Jan 1, 2012 through Dec 31, 2015</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 13px; color: #1E2746; font-weight: 500">Profit</div>
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="font-size: 30px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; color: #0B1020">$1.47M</div>
+
+</div>
+<div style="font-size: 12.5px; color: #4A5578">11.6% margin</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 13px; color: #1E2746; font-weight: 500">Orders</div>
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="font-size: 30px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; color: #0B1020">25,728</div>
+
+</div>
+<div style="font-size: 12.5px; color: #4A5578">17,415 customers</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 13px; color: #1E2746; font-weight: 500">Units sold</div>
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="font-size: 30px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; color: #0B1020">178,312</div>
+
+</div>
+<div style="font-size: 12.5px; color: #4A5578">Average order value $491.39</div>
+</div>
+</div>
+
+<div style="font-size: 13px; color: #6B7699; margin-top: 10px">Key findings</div>
+<div ref="{{measureRef}}" style="display: flex; flex-direction: column; gap: 12px">
+<article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Business growth outpaced sales</h3><button type="button" class="wd-btn" aria-expanded="{{exp.growth}}" onClick="{{tg.growth}}">{{lab.growth}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.growth}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.growth}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.growth.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.growth.atStart}}" onClick="{{story.growth.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.growth.atEnd}}" onClick="{{story.growth.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.growth.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.growth.cap.a}}<strong style="font-weight: 600">{{story.growth.cap.b}}</strong>{{story.growth.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Sales and profit growth</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Annual totals indexed to 2012 = 100</div>
+</figcaption>
+</div>
+<sc-if value="{{c.growth.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.growth.h}}px; font-size: 12px">
+<sc-for list="{{c.growth.grid}}" as="gl" hint-placeholder-count="4"><div style="position: absolute; left: 0; right: 0; top: {{gl.y}}px; height: 1px; background-image: repeating-linear-gradient(to right, #C9CFDD 0 1px, transparent 1px 4px)"></div><div style="position: absolute; left: 0; top: {{gl.ly}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{gl.text}}</div></sc-for><div style="position: absolute; left: {{c.growth.unitX}}px; top: {{c.growth.unitY}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap; font-weight: 500">{{c.growth.unit}}</div>
+<div style="position: absolute; left: 0; right: 0; top: {{c.growth.axisY}}px; height: 1px; background: #3E4658"></div>
+<sc-for list="{{c.growth.xl}}" as="x" hint-placeholder-count="4"><div style="position: absolute; left: {{x.x}}px; top: {{c.growth.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{x.x}}px; top: {{c.growth.xlY}}px; transform: {{x.tf}}; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{x.text}}</div></sc-for>
+<sc-if value="{{c.growth.guide}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{c.growth.guide.x}}px; top: {{c.growth.plotTop}}px; height: {{c.growth.plotH}}px; width: 0; border-left: 1px dashed #8C93A3"></div></sc-if>
+<svg dc-width="{{c.growth.w}}" dc-height="{{c.growth.h}}" dc-viewBox="{{c.growth.vb}}" aria-hidden="true" style="position: absolute; left: 0; top: 0; overflow: visible">
+<path class="wc-draw" dc-d="{{c.growth.s0.d}}" fill="none" stroke="{{c.growth.s0.c}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="1"></path>
+<path class="wc-draw" dc-d="{{c.growth.s1.d}}" fill="none" stroke="{{c.growth.s1.c}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="1"></path>
+</svg>
+<sc-for list="{{c.growth.dots}}" as="d" hint-placeholder-count="8"><div class="wc-fade" style="position: absolute; left: {{d.left}}px; top: {{d.top}}px; width: {{d.sz}}px; height: {{d.sz}}px; box-sizing: border-box; border-radius: 50%; background: {{d.c}}; border: 1.5px solid #FFFFFF"></div></sc-for>
+<sc-for list="{{c.growth.ends}}" as="e" hint-placeholder-count="2"><div class="wc-fade" style="position: absolute; left: {{e.x}}px; top: {{e.y}}px; font-size: 12px; line-height: 16px; font-weight: 600; color: {{e.c}}; white-space: nowrap">{{e.text}}</div></sc-for>
+<sc-for list="{{c.growth.hits}}" as="hh" hint-placeholder-count="4"><button type="button" class="wc-hit" aria-label="{{hh.aria}}" onMouseEnter="{{hh.enter}}" onMouseLeave="{{hh.leave}}" onFocus="{{hh.enter}}" onBlur="{{hh.leave}}" onClick="{{hh.enter}}" style="position: absolute; left: {{hh.x}}px; top: {{c.growth.plotTop}}px; width: {{hh.w}}px; height: {{c.growth.plotH}}px; background: transparent; border: 0; padding: 0; margin: 0; cursor: crosshair; z-index: 4"></button></sc-for>
+<sc-if value="{{c.growth.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.growth.tip.left}}px; top: {{c.growth.tip.top}}px; width: {{c.growth.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.growth.tip.title}}</div>
+<sc-for list="{{c.growth.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.growth.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.growth.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.growth.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.growth.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.growth.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.growth.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Business profile and yearly results</a><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Calculated growth metrics</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Asia Pacific leads sales, Europe leads profit</h3><button type="button" class="wd-btn" aria-expanded="{{exp.markets}}" onClick="{{tg.markets}}">{{lab.markets}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.markets}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.markets}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.markets.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.markets.atStart}}" onClick="{{story.markets.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.markets.atEnd}}" onClick="{{story.markets.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.markets.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.markets.cap.a}}<strong style="font-weight: 600">{{story.markets.cap.b}}</strong>{{story.markets.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Sales and profit margin by market</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">2012–2015 · dashed line marks the company margin</div>
+</figcaption>
+</div>
+<sc-if value="{{c.markets.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.markets.h}}px; font-size: 12px">
+<sc-for list="{{c.markets.hg}}" as="gl" hint-placeholder-count="4"><sc-if value="{{gl.line}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{c.markets.mL}}px; width: {{c.markets.plotW}}px; top: {{gl.y}}px; height: 1px; background-image: repeating-linear-gradient(to right, #DBDFE9 0 1px, transparent 1px 4px)"></div></sc-if><div style="position: absolute; right: {{c.markets.yLabR}}px; top: {{gl.ly}}px; text-align: right; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{gl.text}}</div></sc-for>
+<sc-for list="{{c.markets.vg}}" as="x" hint-placeholder-count="5"><sc-if value="{{x.line}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{x.x}}px; top: {{c.markets.mT}}px; width: 1px; height: {{c.markets.plotH}}px; background-image: repeating-linear-gradient(to bottom, #DBDFE9 0 1px, transparent 1px 4px)"></div></sc-if><div style="position: absolute; left: {{x.x}}px; top: {{c.markets.xtY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{x.text}}</div></sc-for>
+<div style="position: absolute; left: {{c.markets.mL}}px; top: {{c.markets.mT}}px; width: 1px; height: {{c.markets.plotH}}px; background: #3E4658"></div>
+<div style="position: absolute; left: {{c.markets.mL}}px; top: {{c.markets.axisY}}px; width: {{c.markets.plotW}}px; height: 1px; background: #787E8A"></div>
+<div style="position: absolute; left: {{c.markets.mL}}px; top: {{c.markets.unitY}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap; font-weight: 500">{{c.markets.unit}}</div>
+<div style="position: absolute; right: 0; top: {{c.markets.xUnitY}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{c.markets.xUnit}}</div>
+<div style="position: absolute; left: {{c.markets.ref.x}}px; top: {{c.markets.ref.y}}px; width: {{c.markets.ref.len}}px; height: 0; border-top: 1px dashed #6B7699"></div>
+<div style="position: absolute; right: {{c.markets.mR}}px; top: {{c.markets.ref.ly}}px; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{c.markets.ref.label}}</div>
+<sc-for list="{{c.markets.pts}}" as="pt" hint-placeholder-count="5">
+<button type="button" class="wc-dot" aria-label="{{pt.aria}}" onMouseEnter="{{pt.enter}}" onMouseLeave="{{pt.leave}}" onFocus="{{pt.enter}}" onBlur="{{pt.leave}}" onClick="{{pt.enter}}" style="position: absolute; left: {{pt.left}}px; top: {{pt.top}}px; width: {{pt.sz}}px; height: {{pt.sz}}px; box-sizing: border-box; border-radius: 50%; padding: 0; margin: 0; background: {{pt.c}}; opacity: {{pt.op}}; border: {{pt.ring}}; box-shadow: {{pt.shadow}}; cursor: pointer; z-index: 3"></button>
+<div style="position: absolute; left: {{pt.lx}}px; top: {{pt.ly}}px; transform: {{pt.ltf}}; font-size: 12px; line-height: 16px; color: #262626; opacity: {{pt.lop}}; white-space: nowrap; pointer-events: none; transition: opacity 120ms">{{pt.label}}</div>
+</sc-for>
+<sc-if value="{{c.markets.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.markets.tip.left}}px; top: {{c.markets.tip.top}}px; width: {{c.markets.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.markets.tip.title}}</div>
+<sc-for list="{{c.markets.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.markets.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.markets.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.markets.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.markets.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.markets.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.markets.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Market performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Geographic performance is uneven</h3><button type="button" class="wd-btn" aria-expanded="{{exp.regions}}" onClick="{{tg.regions}}">{{lab.regions}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.regions}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.regions}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.regions.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.regions.atStart}}" onClick="{{story.regions.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.regions.atEnd}}" onClick="{{story.regions.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.regions.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.regions.cap.a}}<strong style="font-weight: 600">{{story.regions.cap.b}}</strong>{{story.regions.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit margin by region</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Highest and lowest of 23 regions, 2012–2015</div>
+</figcaption>
+</div>
+<sc-if value="{{c.regions.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.regions.h}}px; font-size: 12px">
+<sc-if value="{{c.regions.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{c.regions.ref.x}}px; top: {{c.regions.ref.y1}}px; height: {{c.regions.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{c.regions.ref.x}}px; top: 0; transform: {{c.regions.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{c.regions.ref.label}}</div></sc-if>
+<sc-for list="{{c.regions.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{c.regions.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{c.regions.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.regions.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{c.regions.zx}}px; top: {{c.regions.zy}}px; height: {{c.regions.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{c.regions.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{c.regions.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{c.regions.axisX}}px; top: {{c.regions.axisY}}px; width: {{c.regions.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{c.regions.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{c.regions.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{c.regions.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{c.regions.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.regions.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.regions.tip.left}}px; top: {{c.regions.tip.top}}px; width: {{c.regions.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.regions.tip.title}}</div>
+<sc-for list="{{c.regions.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{c.regions.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{c.regions.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{c.regions.more.text}}</button></div></sc-if>
+</sc-if>
+<sc-if value="{{c.regions.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.regions.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.regions.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.regions.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.regions.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.regions.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Regional performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Technology is strongest; Furniture is the weak link</h3><button type="button" class="wd-btn" aria-expanded="{{exp.subcats}}" onClick="{{tg.subcats}}">{{lab.subcats}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.subcats}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.subcats}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.subcats.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.subcats.atStart}}" onClick="{{story.subcats.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.subcats.atEnd}}" onClick="{{story.subcats.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.subcats.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.subcats.cap.a}}<strong style="font-weight: 600">{{story.subcats.cap.b}}</strong>{{story.subcats.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit by sub-category</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Grouped by category, 2012–2015 · US$</div>
+</figcaption>
+</div>
+<sc-if value="{{c.subcats.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.subcats.h}}px; font-size: 12px">
+<sc-if value="{{c.subcats.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{c.subcats.ref.x}}px; top: {{c.subcats.ref.y1}}px; height: {{c.subcats.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{c.subcats.ref.x}}px; top: 0; transform: {{c.subcats.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{c.subcats.ref.label}}</div></sc-if>
+<sc-for list="{{c.subcats.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{c.subcats.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{c.subcats.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.subcats.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{c.subcats.zx}}px; top: {{c.subcats.zy}}px; height: {{c.subcats.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{c.subcats.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{c.subcats.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{c.subcats.axisX}}px; top: {{c.subcats.axisY}}px; width: {{c.subcats.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{c.subcats.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{c.subcats.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{c.subcats.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{c.subcats.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.subcats.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.subcats.tip.left}}px; top: {{c.subcats.tip.top}}px; width: {{c.subcats.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.subcats.tip.title}}</div>
+<sc-for list="{{c.subcats.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{c.subcats.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{c.subcats.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{c.subcats.more.text}}</button></div></sc-if>
+</sc-if>
+<sc-if value="{{c.subcats.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.subcats.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.subcats.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.subcats.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.subcats.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.subcats.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Category and sub-category performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Discounting is the clearest profitability risk</h3><button type="button" class="wd-btn" aria-expanded="{{exp.bands}}" onClick="{{tg.bands}}">{{lab.bands}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.bands}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.bands}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.bands.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.bands.atStart}}" onClick="{{story.bands.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.bands.atEnd}}" onClick="{{story.bands.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.bands.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.bands.cap.a}}<strong style="font-weight: 600">{{story.bands.cap.b}}</strong>{{story.bands.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Profit margin by discount level</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Line-item discount bands · share of total sales under each band</div>
+</figcaption>
+</div>
+<sc-if value="{{c.bands.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.bands.h}}px; font-size: 12px">
+<sc-for list="{{c.bands.grid}}" as="gl" hint-placeholder-count="4"><div style="position: absolute; left: 0; right: 0; top: {{gl.y}}px; height: 1px; background-image: repeating-linear-gradient(to right, #C9CFDD 0 1px, transparent 1px 4px)"></div><div style="position: absolute; left: 0; top: {{gl.ly}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{gl.text}}</div></sc-for><div style="position: absolute; left: {{c.bands.unitX}}px; top: {{c.bands.unitY}}px; font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap; font-weight: 500">{{c.bands.unit}}</div>
+<sc-for list="{{c.bands.cols}}" as="k" hint-placeholder-count="7">
+<div class="wc-col" style="position: absolute; left: {{k.x}}px; top: {{k.y}}px; width: {{k.w}}px; height: {{k.h}}px; background: {{k.fill}}; transform-origin: {{k.origin}}"></div>
+<div style="position: absolute; left: {{k.cx}}px; top: {{k.vy}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{k.vText}}</div>
+<div style="position: absolute; left: {{k.cx}}px; top: {{c.bands.labY}}px; transform: translateX(-50%); font-size: {{c.bands.fs}}px; line-height: 14px; color: #262626; white-space: nowrap">{{k.lab}}</div>
+<div style="position: absolute; left: {{k.cx}}px; top: {{c.bands.subY}}px; transform: translateX(-50%); font-size: {{c.bands.fs}}px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{k.sub}}</div>
+</sc-for>
+<div style="position: absolute; left: 0; right: 0; top: {{c.bands.zy}}px; height: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{c.bands.cols}}" as="k" hint-placeholder-count="7"><button type="button" class="wc-hit" aria-label="{{k.aria}}" onMouseEnter="{{k.enter}}" onMouseLeave="{{k.leave}}" onFocus="{{k.enter}}" onBlur="{{k.leave}}" onClick="{{k.enter}}" style="position: absolute; left: {{k.hitX}}px; top: {{c.bands.plotTop}}px; width: {{k.hitW}}px; height: {{c.bands.plotH}}px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.bands.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.bands.tip.left}}px; top: {{c.bands.tip.top}}px; width: {{c.bands.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.bands.tip.title}}</div>
+<sc-for list="{{c.bands.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.bands.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.bands.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.bands.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.bands.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.bands.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.bands.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Discount-band performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Segment differences are mostly size, not economics</h3><button type="button" class="wd-btn" aria-expanded="{{exp.segments}}" onClick="{{tg.segments}}">{{lab.segments}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.segments}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.segments}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.segments.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.segments.atStart}}" onClick="{{story.segments.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.segments.atEnd}}" onClick="{{story.segments.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.segments.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.segments.cap.a}}<strong style="font-weight: 600">{{story.segments.cap.b}}</strong>{{story.segments.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Segment size and margin</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Share of sales varies widely; margin barely moves</div>
+</figcaption>
+</div>
+<sc-if value="{{c.segments.chartOn}}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{c.segments.wide}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.segments.h}}px; font-size: 12px">
+<sc-for list="{{c.segments.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.x}}px; top: 2px; width: {{pn.tw}}px; font-size: 12px; line-height: 14px; font-weight: 500; color: #4A5578; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pn.title}}</div></sc-for>
+<sc-for list="{{c.segments.rows}}" as="r" hint-placeholder-count="4">
+<div style="position: absolute; left: 0; right: 0; top: {{r.sepY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.segments.labW}}px; line-height: 20px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<sc-for list="{{r.cells}}" as="cl" hint-placeholder-count="2"><div class="wc-bar" style="position: absolute; left: {{cl.bx}}px; top: {{cl.by}}px; width: {{cl.bw}}px; height: 20px; background: {{cl.fill}}; transform-origin: {{cl.origin}}"></div><div style="position: absolute; left: {{cl.vx}}px; top: {{cl.by}}px; line-height: 20px; transform: {{cl.vtf}}; color: #6B6B6B; white-space: nowrap">{{cl.vText}}</div></sc-for>
+</sc-for>
+<div style="position: absolute; left: 0; right: 0; top: {{c.segments.endY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-for list="{{c.segments.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.zx}}px; top: {{c.segments.zy}}px; height: {{c.segments.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div></sc-for>
+<sc-for list="{{c.segments.rows}}" as="r" hint-placeholder-count="4"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.segments.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.segments.tip.left}}px; top: {{c.segments.tip.top}}px; width: {{c.segments.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.segments.tip.title}}</div>
+<sc-for list="{{c.segments.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.segments.narrow}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{c.segments.parts}}" as="part" hint-placeholder-count="2"><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 12px; font-weight: 500; color: #4A5578">{{part.title}}</div>
+<div style="position: relative; height: {{part.h}}px; font-size: 12px">
+<sc-if value="{{part.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{part.ref.x}}px; top: {{part.ref.y1}}px; height: {{part.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{part.ref.x}}px; top: 0; transform: {{part.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{part.ref.label}}</div></sc-if>
+<sc-for list="{{part.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{part.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{part.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{part.zx}}px; top: {{part.zy}}px; height: {{part.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{part.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{part.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{part.axisX}}px; top: {{part.axisY}}px; width: {{part.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{part.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{part.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{part.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{part.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{part.tip.left}}px; top: {{part.tip.top}}px; width: {{part.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{part.tip.title}}</div>
+<sc-for list="{{part.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{part.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{part.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{part.more.text}}</button></div></sc-if>
+</div></sc-for>
+</div></sc-if>
+</sc-if>
+<sc-if value="{{c.segments.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.segments.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.segments.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.segments.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.segments.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.segments.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Customer segment performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Faster shipping costs more without changing margin much</h3><button type="button" class="wd-btn" aria-expanded="{{exp.ship}}" onClick="{{tg.ship}}">{{lab.ship}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.ship}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.ship}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.ship.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.ship.atStart}}" onClick="{{story.ship.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.ship.atEnd}}" onClick="{{story.ship.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.ship.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.ship.cap.a}}<strong style="font-weight: 600">{{story.ship.cap.b}}</strong>{{story.ship.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Ship mode economics</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Line-item averages, 2012–2015</div>
+</figcaption>
+</div>
+<sc-if value="{{c.ship.chartOn}}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{c.ship.wide}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.ship.h}}px; font-size: 12px">
+<sc-for list="{{c.ship.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.x}}px; top: 2px; width: {{pn.tw}}px; font-size: 12px; line-height: 14px; font-weight: 500; color: #4A5578; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pn.title}}</div></sc-for>
+<sc-for list="{{c.ship.rows}}" as="r" hint-placeholder-count="4">
+<div style="position: absolute; left: 0; right: 0; top: {{r.sepY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.ship.labW}}px; line-height: 20px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<sc-for list="{{r.cells}}" as="cl" hint-placeholder-count="2"><div class="wc-bar" style="position: absolute; left: {{cl.bx}}px; top: {{cl.by}}px; width: {{cl.bw}}px; height: 20px; background: {{cl.fill}}; transform-origin: {{cl.origin}}"></div><div style="position: absolute; left: {{cl.vx}}px; top: {{cl.by}}px; line-height: 20px; transform: {{cl.vtf}}; color: #6B6B6B; white-space: nowrap">{{cl.vText}}</div></sc-for>
+</sc-for>
+<div style="position: absolute; left: 0; right: 0; top: {{c.ship.endY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-for list="{{c.ship.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.zx}}px; top: {{c.ship.zy}}px; height: {{c.ship.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div></sc-for>
+<sc-for list="{{c.ship.rows}}" as="r" hint-placeholder-count="4"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.ship.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.ship.tip.left}}px; top: {{c.ship.tip.top}}px; width: {{c.ship.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.ship.tip.title}}</div>
+<sc-for list="{{c.ship.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.ship.narrow}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{c.ship.parts}}" as="part" hint-placeholder-count="2"><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 12px; font-weight: 500; color: #4A5578">{{part.title}}</div>
+<div style="position: relative; height: {{part.h}}px; font-size: 12px">
+<sc-if value="{{part.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{part.ref.x}}px; top: {{part.ref.y1}}px; height: {{part.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{part.ref.x}}px; top: 0; transform: {{part.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{part.ref.label}}</div></sc-if>
+<sc-for list="{{part.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{part.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{part.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{part.zx}}px; top: {{part.zy}}px; height: {{part.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{part.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{part.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{part.axisX}}px; top: {{part.axisY}}px; width: {{part.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{part.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{part.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{part.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{part.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{part.tip.left}}px; top: {{part.tip.top}}px; width: {{part.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{part.tip.title}}</div>
+<sc-for list="{{part.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{part.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{part.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{part.more.text}}</button></div></sc-if>
+</div></sc-for>
+</div></sc-if>
+</sc-if>
+<sc-if value="{{c.ship.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.ship.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.ship.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.ship.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.ship.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.ship.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Ship-mode performance</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">Revenue is not concentrated in a few customers</h3><button type="button" class="wd-btn" aria-expanded="{{exp.customers}}" onClick="{{tg.customers}}">{{lab.customers}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.customers}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.customers}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.customers.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.customers.atStart}}" onClick="{{story.customers.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.customers.atEnd}}" onClick="{{story.customers.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.customers.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.customers.cap.a}}<strong style="font-weight: 600">{{story.customers.cap.b}}</strong>{{story.customers.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Top 10 customers by sales</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Sales and profit per customer, 2012–2015 · US$</div>
+</figcaption>
+</div>
+<sc-if value="{{c.customers.chartOn}}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{c.customers.wide}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.customers.h}}px; font-size: 12px">
+<sc-for list="{{c.customers.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.x}}px; top: 2px; width: {{pn.tw}}px; font-size: 12px; line-height: 14px; font-weight: 500; color: #4A5578; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pn.title}}</div></sc-for>
+<sc-for list="{{c.customers.rows}}" as="r" hint-placeholder-count="4">
+<div style="position: absolute; left: 0; right: 0; top: {{r.sepY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.customers.labW}}px; line-height: 20px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<sc-for list="{{r.cells}}" as="cl" hint-placeholder-count="2"><div class="wc-bar" style="position: absolute; left: {{cl.bx}}px; top: {{cl.by}}px; width: {{cl.bw}}px; height: 20px; background: {{cl.fill}}; transform-origin: {{cl.origin}}"></div><div style="position: absolute; left: {{cl.vx}}px; top: {{cl.by}}px; line-height: 20px; transform: {{cl.vtf}}; color: #6B6B6B; white-space: nowrap">{{cl.vText}}</div></sc-for>
+</sc-for>
+<div style="position: absolute; left: 0; right: 0; top: {{c.customers.endY}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-for list="{{c.customers.panels}}" as="pn" hint-placeholder-count="2"><div style="position: absolute; left: {{pn.zx}}px; top: {{c.customers.zy}}px; height: {{c.customers.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div></sc-for>
+<sc-for list="{{c.customers.rows}}" as="r" hint-placeholder-count="4"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.customers.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.customers.tip.left}}px; top: {{c.customers.tip.top}}px; width: {{c.customers.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.customers.tip.title}}</div>
+<sc-for list="{{c.customers.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{c.customers.narrow}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{c.customers.parts}}" as="part" hint-placeholder-count="2"><div style="display: flex; flex-direction: column; gap: 8px"><div style="font-size: 12px; font-weight: 500; color: #4A5578">{{part.title}}</div>
+<div style="position: relative; height: {{part.h}}px; font-size: 12px">
+<sc-if value="{{part.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{part.ref.x}}px; top: {{part.ref.y1}}px; height: {{part.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{part.ref.x}}px; top: 0; transform: {{part.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{part.ref.label}}</div></sc-if>
+<sc-for list="{{part.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{part.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{part.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{part.zx}}px; top: {{part.zy}}px; height: {{part.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{part.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{part.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{part.axisX}}px; top: {{part.axisY}}px; width: {{part.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{part.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{part.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{part.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{part.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{part.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{part.tip.left}}px; top: {{part.tip.top}}px; width: {{part.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{part.tip.title}}</div>
+<sc-for list="{{part.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{part.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{part.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{part.more.text}}</button></div></sc-if>
+</div></sc-for>
+</div></sc-if>
+</sc-if>
+<sc-if value="{{c.customers.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.customers.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.customers.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.customers.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.customers.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.customers.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Top-customer results</a></div>
+</article><article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px"><h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #0B1020">A few products stand out at both extremes</h3><button type="button" class="wd-btn" aria-expanded="{{exp.products}}" onClick="{{tg.products}}">{{lab.products}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; transform: {{rot.products}}; transition: transform 160ms"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<sc-if value="{{exp.products}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px"><div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap"><span style="font-size: 12px; color: oklch(.56 .021243 274)">{{story.products.counter}}</span><div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wd-btn" disabled="{{story.products.atStart}}" onClick="{{story.products.back}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button><button type="button" class="wd-btn" disabled="{{story.products.atEnd}}" onClick="{{story.products.next}}">Next<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button><button type="button" class="wd-btn wd-ghost" aria-label="Start over" title="Start over" onClick="{{story.products.restart}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div><div aria-live="polite" style="min-height: 22px; background: oklch(.965 .004 274); border-radius: 8px; padding: 12px 16px; font-size: 14px; line-height: 1.55; color: oklch(.2 .012904 274)">{{story.products.cap.a}}<strong style="font-weight: 600">{{story.products.cap.b}}</strong>{{story.products.cap.c}}</div></div>
+<figure style="margin: 18px 0 0; padding-top: 18px; border-top: 1px solid #E4E8F2; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px">
+<figcaption style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #6B6B6B">Most and least profitable products</div>
+<div style="font-size: 13px; line-height: 18px; color: #6B6B6B">Total profit, 2012–2015 · US$</div>
+</figcaption>
+</div>
+<sc-if value="{{c.products.chartOn}}" hint-placeholder-val="{{ true }}">
+<div style="position: relative; height: {{c.products.h}}px; font-size: 12px">
+<sc-if value="{{c.products.ref}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; left: {{c.products.ref.x}}px; top: {{c.products.ref.y1}}px; height: {{c.products.ref.len}}px; width: 0; border-left: 1px dashed #6B7699; z-index: 2"></div><div style="position: absolute; left: {{c.products.ref.x}}px; top: 0; transform: {{c.products.ref.tf}}; font-size: 11.5px; line-height: 14px; color: #4A5578; white-space: nowrap">{{c.products.ref.label}}</div></sc-if>
+<sc-for list="{{c.products.heads}}" as="hd" hint-placeholder-count="1"><div style="position: absolute; left: 0; right: 0; top: {{hd.y}}px; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; overflow: hidden; line-height: 16px"><span style="font-weight: 600; color: #0B1020; font-size: 12.5px">{{hd.label}}</span><span style="color: #6B6B6B; font-size: 12px; overflow: hidden; text-overflow: ellipsis">{{hd.note}}</span></div></sc-for>
+<sc-for list="{{c.products.rows}}" as="r" hint-placeholder-count="5">
+<div style="position: absolute; left: 0; top: {{r.sepY}}px; width: {{c.products.sepW}}px; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div>
+<sc-if value="{{r.track}}" hint-placeholder-val="{{ true }}"><div style="position: absolute; left: {{r.trackX}}px; top: {{r.by}}px; width: {{r.trackW}}px; height: {{r.bh}}px; background: #F2F4F7"></div></sc-if>
+<div class="wc-bar" style="position: absolute; left: {{r.bx}}px; top: {{r.by}}px; width: {{r.bw}}px; height: {{r.bh}}px; background: {{r.fill}}; transform-origin: {{r.origin}}"></div>
+<div style="position: absolute; left: 0; top: {{r.by}}px; width: {{c.products.labW}}px; line-height: {{r.bh}}px; color: #262626; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.label}}</div>
+<div style="position: absolute; left: {{r.vx}}px; top: {{r.by}}px; line-height: {{r.bh}}px; transform: {{r.vtf}}; color: #6B6B6B; white-space: nowrap">{{r.vText}}</div>
+</sc-for>
+<div style="position: absolute; left: {{c.products.zx}}px; top: {{c.products.zy}}px; height: {{c.products.zh}}px; width: 1px; background: #3E4658; z-index: 1"></div>
+<sc-for list="{{c.products.gaps}}" as="g" hint-placeholder-count="0"><div style="position: absolute; left: 0; right: 0; top: {{g.y}}px; height: 36px; display: flex; align-items: center; gap: 12px; z-index: 3"><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div><button type="button" class="wc-link" onClick="{{g.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{g.text}}</button><div style="flex: 1; height: 1px; background-image: repeating-linear-gradient(to right, #B3BBCC 0 1px, transparent 1px 4px)"></div></div></sc-for>
+<sc-if value="{{c.products.hasTicks}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: {{c.products.axisX}}px; top: {{c.products.axisY}}px; width: {{c.products.axisW}}px; height: 0; border-top: 1px solid #A6ACB8"></div>
+<sc-for list="{{c.products.ticks}}" as="t" hint-placeholder-count="4"><div style="position: absolute; left: {{t.x}}px; top: {{c.products.axisY}}px; width: 0; height: 4px; border-left: 1px solid #A6ACB8"></div><div style="position: absolute; left: {{t.x}}px; top: {{c.products.tickY}}px; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: #6B6B6B; white-space: nowrap">{{t.text}}</div></sc-for>
+</sc-if>
+<sc-for list="{{c.products.rows}}" as="r" hint-placeholder-count="5"><button type="button" class="wc-hit" aria-label="{{r.aria}}" onMouseEnter="{{r.enter}}" onMouseLeave="{{r.leave}}" onFocus="{{r.enter}}" onBlur="{{r.leave}}" onClick="{{r.enter}}" style="position: absolute; left: 0; top: {{r.sepY}}px; width: 100%; height: 28px; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; z-index: 4"></button></sc-for>
+<sc-if value="{{c.products.tip}}" hint-placeholder-val="{{ false }}">
+<div role="tooltip" style="position: absolute; left: {{c.products.tip.left}}px; top: {{c.products.tip.top}}px; width: {{c.products.tip.w}}px; box-sizing: border-box; z-index: 6; pointer-events: none; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; box-shadow: 0 8px 20px rgba(20,26,51,0.08), 0 2px 6px rgba(20,26,51,0.04); padding: 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 12.5px; line-height: 16px; font-weight: 600; color: #0B1020; overflow-wrap: anywhere">{{c.products.tip.title}}</div>
+<sc-for list="{{c.products.tip.lines}}" as="ln" hint-placeholder-count="3"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 14px; color: #4A5578"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 10px; height: 3px; border-radius: 2px; background: {{ln.c}}; display: {{ln.sw}}"></span>{{ln.k}}</span><span style="color: #0B1020; font-weight: 500">{{ln.v}}</span></div></sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{c.products.more}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: center; margin-top: 8px"><button type="button" class="wc-link" onClick="{{c.products.more.toggle}}" style="font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #544AEF; background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 999px; padding: 6px 12px; cursor: pointer">{{c.products.more.text}}</button></div></sc-if>
+</sc-if>
+<sc-if value="{{c.products.tableOn}}" hint-placeholder-val="{{ false }}">
+<div style="overflow-x: auto; border: 1px solid #E4E8F2; border-radius: 8px">
+<div style="min-width: 520px; font-size: 12.5px; font-variant-numeric: tabular-nums">
+<div style="display: grid; grid-template-columns: {{c.products.tbl.gtc}}; background: #F2F4F9; color: #4A5578; font-weight: 500"><sc-for list="{{c.products.tbl.head}}" as="hc" hint-placeholder-count="4"><div style="padding: 8px 12px; text-align: {{hc.al}}">{{hc.t}}</div></sc-for></div>
+<sc-for list="{{c.products.tbl.rows}}" as="tr" hint-placeholder-count="4"><div style="display: grid; grid-template-columns: {{c.products.tbl.gtc}}; border-top: 1px solid #E4E8F2; color: #1E2746"><sc-for list="{{tr.cells}}" as="td" hint-placeholder-count="4"><div style="padding: 7px 12px; text-align: {{td.al}}">{{td.t}}</div></sc-for></div></sc-for>
+</div></div>
+</sc-if>
+</figure>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 14px"><sc-for list="{{story.products.dots}}" as="d" hint-placeholder-count="3"><button type="button" aria-label="{{d.label}}" onClick="{{d.go}}" style="width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; background: {{d.bg}}"></button></sc-for></div>
+</sc-if>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px"><a href="#" class="wc-src" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7699; text-decoration: none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>Product profitability rankings</a></div>
+</article>
+<article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<h3 style="margin: 0 0 12px; font-size: 14px; font-weight: 600; color: #0B1020">Management priorities</h3>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #1E2746"><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 22px; height: 22px; border-radius: 6px; background: #F2F4F9; color: #1E2746; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">1</span><span style="padding-top: 2px">Tighten or require approval for discounts above 20%.</span></li><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 22px; height: 22px; border-radius: 6px; background: #F2F4F9; color: #1E2746; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">2</span><span style="padding-top: 2px">Diagnose Western Asia, Western Africa, Central Asia, and Southeastern Asia by product and discount mix.</span></li><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 22px; height: 22px; border-radius: 6px; background: #F2F4F9; color: #1E2746; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">3</span><span style="padding-top: 2px">Reprice, rationalize, or renegotiate costs for Tables and the worst-performing products.</span></li><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 22px; height: 22px; border-radius: 6px; background: #F2F4F9; color: #1E2746; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">4</span><span style="padding-top: 2px">Protect growth in Technology, Copiers, Phones, and Office Supplies.</span></li><li style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 22px; height: 22px; border-radius: 6px; background: #F2F4F9; color: #1E2746; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">5</span><span style="padding-top: 2px">Review unprofitable high-sales customers at the transaction level before pursuing more volume.</span></li></ol>
+</article>
+<article style="background: #FFFFFF; border: 1px solid #E4E8F2; border-radius: 8px; padding: 20px">
+<h3 style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #0B1020">Method note</h3>
+<p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: #1E2746; max-width: 68ch">Average discount, shipping cost, and delivery time are line-item-weighted because the source data is at order-line grain. The findings describe historical associations and do not establish causation. Charts plot the same aggregates; each one can be switched to its underlying table.</p>
+</article>
+</div>
+</section>
+
+<section aria-labelledby="fol-h" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px">
+<h2 id="fol-h" style="margin: 0 0 6px; font-size: 13px; font-weight: 400; color: #6B7699">Suggested follow-ups</h2>
+<a href="#" class="wc-fol" style="display: flex; gap: 12px; align-items: center; padding: 10px 0; color: #1E2746; font-size: 13.5px; text-decoration: underline; text-decoration-color: #CBD2E3; text-underline-offset: 3px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>Which regions and products are driving the losses from discounts above 20%?</span></a><a href="#" class="wc-fol" style="display: flex; gap: 12px; align-items: center; padding: 10px 0; color: #1E2746; font-size: 13.5px; text-decoration: underline; text-decoration-color: #CBD2E3; text-underline-offset: 3px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>Give me a deeper profitability diagnosis for the Furniture category.</span></a><a href="#" class="wc-fol" style="display: flex; gap: 12px; align-items: center; padding: 10px 0; color: #1E2746; font-size: 13.5px; text-decoration: underline; text-decoration-color: #CBD2E3; text-underline-offset: 3px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>Which high-sales customers are unprofitable, and what are they buying?</span></a><a href="#" class="wc-fol" style="display: flex; gap: 12px; align-items: center; padding: 10px 0; color: #1E2746; font-size: 13.5px; text-decoration: underline; text-decoration-color: #CBD2E3; text-underline-offset: 3px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg><span>Summarize the strongest and weakest countries with recommended actions.</span></a>
+</section>
+
+<div style="display: flex; align-items: center; gap: 2px; flex-wrap: wrap; color: #4A5578; font-size: 12.5px">
+<button type="button" class="wc-ghost" style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>Explain</button>
+<button type="button" class="wc-ghost" aria-label="Good response" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 10v12"></path><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"></path></svg></button><button type="button" class="wc-ghost" aria-label="Bad response" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M17 14V2"></path><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"></path></svg></button><button type="button" class="wc-ghost" aria-label="Share" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.59 13.51 6.83 3.98"></path><path d="m15.41 6.51-6.82 3.98"></path></svg></button><button type="button" class="wc-ghost" aria-label="Copy link" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button type="button" class="wc-ghost" aria-label="Save to dashboard" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></button><button type="button" class="wc-ghost" aria-label="Delete" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; cursor: pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg></button>
+<span style="margin-left: 8px; color: #6B7699">1m 57s</span>
+</div>
+</div>
+
+<div style="position: sticky; bottom: 0; margin-top: 16px; background: linear-gradient(to bottom, rgba(255,255,255,0), #FFFFFF 28px); padding: 24px 24px 20px">
+<div style="width: 100%; max-width: 736px; margin: 0 auto; box-sizing: border-box; border: 1px solid #E4E8F2; border-radius: 16px; background: #FFFFFF; box-shadow: 0 2px 6px rgba(20,26,51,0.06), 0 1px 2px rgba(20,26,51,0.04); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px">
+<label for="ask" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask a follow-up</label>
+<input id="ask" type="text" placeholder="Which regions and products are driving the losses from discounts above 20%?" style="border: 0; outline: none; font: 400 13.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; color: #0B1020; padding: 4px 2px; background: transparent; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px"><button type="button" class="wc-ghost" aria-label="Attach" style="width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button><button type="button" class="wc-ghost" style="display: inline-flex; align-items: center; gap: 6px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: #1E2746; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; padding: 0 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14a9 3 0 0 0 18 0V5"></path><path d="M3 12a9 3 0 0 0 18 0"></path></svg>Global Superstore 2016<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button></div>
+<div style="display: flex; align-items: center; gap: 6px"><button type="button" class="wc-ghost" style="display: inline-flex; align-items: center; gap: 4px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: #1E2746; font: 500 12.5px Inter, 'Avenir Next LT Pro', system-ui, sans-serif; padding: 0 8px">Thinking<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m6 9 6 6 6-6"></path></svg></button><button type="button" class="wc-ghost" aria-label="Dictate" style="width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: #4A5578; display: inline-flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg></button><button type="button" aria-label="Send" style="width: 32px; height: 32px; border: 0; border-radius: 10px; background: #F2F4F9; color: #6B7699; display: inline-flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg></button></div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</template>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script type="text/x-dc">
+class Component extends DCLogic {
+  state = { cw: 722, hov: null, tables: {}, open: {}, exp: {}, story: {} };
+  D = {"years": [{"y": 2012, "s": 2259450.9, "p": 248940.81, "o": 4515, "u": 31443}, {"y": 2013, "s": 2677438.69, "p": 307415.28, "o": 5473, "u": 38111}, {"y": 2014, "s": 3405746.45, "p": 406935.23, "o": 6883, "u": 48136}, {"y": 2015, "s": 4299865.87, "p": 504165.97, "o": 8857, "u": 60622}], "markets": [{"l": "Africa", "s": 783773.21, "p": 88871.63}, {"l": "Asia Pacific", "s": 4042658.27, "p": 403176.04}, {"l": "Europe", "s": 3287336.23, "p": 449551.72}, {"l": "LATAM", "s": 2164605.17, "p": 221643.49}, {"l": "USCA", "s": 2364129.03, "p": 304214.41}], "regions": [{"l": "Canada", "s": 66928.17, "p": 17817.39}, {"l": "Caribbean", "s": 324280.86, "p": 34571.32}, {"l": "Central Africa", "s": 143630.01, "p": 35383.71}, {"l": "Central America", "s": 1223100.63, "p": 158981.65}, {"l": "Central Asia", "s": 19311.46, "p": -7282.01}, {"l": "Central US", "s": 501239.89, "p": 39706.36}, {"l": "Eastern Africa", "s": 127856.02, "p": 21900.91}, {"l": "Eastern Asia", "s": 855059.39, "p": 167101.85}, {"l": "Eastern Europe", "s": 310033.44, "p": 77084.88}, {"l": "Eastern US", "s": 678781.24, "p": 91522.78}, {"l": "North Africa", "s": 233216.61, "p": 57836.25}, {"l": "Northern Europe", "s": 636779.16, "p": 83923.92}, {"l": "Oceania", "s": 1100184.61, "p": 120089.11}, {"l": "South America", "s": 617223.68, "p": 28090.52}, {"l": "Southeastern Asia", "s": 884423.17, "p": 17852.33}, {"l": "Southern Africa", "s": 105191.76, "p": 24158.55}, {"l": "Southern Asia", "s": 866572.68, "p": 159336.43}, {"l": "Southern Europe", "s": 608593.97, "p": 70109.42}, {"l": "Southern US", "s": 391721.9, "p": 46749.43}, {"l": "Western Africa", "s": 173878.81, "p": -50407.79}, {"l": "Western Asia", "s": 317106.96, "p": -53921.67}, {"l": "Western Europe", "s": 1731929.67, "p": 218433.51}, {"l": "Western US", "s": 725457.82, "p": 108418.45}], "subcats": [{"c": "Furniture", "l": "Bookcases", "s": 1466572.24, "p": 161924.42, "q": 8310}, {"c": "Furniture", "l": "Chairs", "s": 1501681.76, "p": 140396.27, "q": 12336}, {"c": "Furniture", "l": "Furnishings", "s": 385155.97, "p": 46845.43, "q": 11163}, {"c": "Furniture", "l": "Tables", "s": 757041.92, "p": -64083.39, "q": 3083}, {"c": "Office Supplies", "l": "Appliances", "s": 1010535.52, "p": 141562.59, "q": 6026}, {"c": "Office Supplies", "l": "Art", "s": 371613.15, "p": 57829.86, "q": 16215}, {"c": "Office Supplies", "l": "Binders", "s": 461869.39, "p": 72433.15, "q": 21403}, {"c": "Office Supplies", "l": "Envelopes", "s": 169217.49, "p": 28849.49, "q": 8210}, {"c": "Office Supplies", "l": "Fasteners", "s": 89495.05, "p": 13844.29, "q": 9051}, {"c": "Office Supplies", "l": "Labels", "s": 73350.28, "p": 14988.92, "q": 9301}, {"c": "Office Supplies", "l": "Paper", "s": 241787.53, "p": 58111.65, "q": 12672}, {"c": "Office Supplies", "l": "Storage", "s": 1126812.97, "p": 108416.68, "q": 16884}, {"c": "Office Supplies", "l": "Supplies", "s": 242811.13, "p": 22559.2, "q": 8482}, {"c": "Technology", "l": "Accessories", "s": 749237.02, "p": 129626.31, "q": 10946}, {"c": "Technology", "l": "Copiers", "s": 1509436.27, "p": 258567.55, "q": 7454}, {"c": "Technology", "l": "Machines", "s": 779060.07, "p": 58867.87, "q": 4906}, {"c": "Technology", "l": "Phones", "s": 1706824.14, "p": 216717.01, "q": 11870}], "bands": [{"l": "0%", "s": 6992410.95, "p": 1770695.27}, {"l": "1–10%", "s": 1962618.85, "p": 338189.26}, {"l": "11–20%", "s": 1757261.34, "p": 173254.84}, {"l": "21–30%", "s": 382554.69, "p": -21155.61}, {"l": "31–40%", "s": 701343.12, "p": -166115.45}, {"l": "41–50%", "s": 474688.31, "p": -214829.37}, {"l": "Over 50%", "s": 371624.66, "p": -412581.66}], "segments": [{"l": "Consumer", "s": 6507949.42, "p": 749239.78}, {"l": "Corporate", "s": 3824697.52, "p": 441208.33}, {"l": "Home Office", "s": 2309854.97, "p": 277009.18}], "ship": [{"l": "First Class", "s": 1830976.14, "p": 208104.68, "d": 2.18, "c": 41.12}, {"l": "Same Day", "s": 667201.98, "p": 76173.07, "d": 0.04, "c": 43.0}, {"l": "Second Class", "s": 2565671.68, "p": 292583.53, "d": 3.23, "c": 30.56}, {"l": "Standard Class", "s": 7578652.11, "p": 890596.02, "d": 5.0, "c": 20.09}], "customers": [{"l": "Sean Miller", "s": 23669.2, "p": -1787.04}, {"l": "Tamara Chand", "s": 18437.14, "p": 8745.06}, {"l": "Raymond Buch", "s": 14345.28, "p": 6807.09}, {"l": "Tom Ashbrook", "s": 13723.5, "p": 4599.21}, {"l": "Adrian Barton", "s": 12181.59, "p": 5362.61}, {"l": "Dave Poirier", "s": 11864.14, "p": 2220.37}, {"l": "Fred Hopkins", "s": 10880.18, "p": 945.6}, {"l": "Becky Martin", "s": 10539.9, "p": -1878.79}, {"l": "Hunter Lopez", "s": 10522.55, "p": 5045.86}, {"l": "Cynthia Arntzen", "s": 10463.01, "p": 3981.72}], "products": [{"l": "Canon imageCLASS 2200 Advanced Copier", "c": "Technology", "s": 61599.82, "p": 25199.93}, {"l": "Cisco Smart Phone, Full Size", "c": "Technology", "s": 76441.53, "p": 17238.52}, {"l": "Motorola Smart Phone, Full Size", "c": "Technology", "s": 73156.3, "p": 17027.11}, {"l": "Hoover Stove, Red", "c": "Office Supplies", "s": 31663.78, "p": 11807.97}, {"l": "Sauder Classic Bookcase, Traditional", "c": "Furniture", "s": 39108.3, "p": 10672.07}, {"l": "Bevis Round Table, Adjustable Height", "c": "Furniture", "s": 5654.8, "p": -3649.89}, {"l": "Cubify CubeX 3D Printer Triple Head Print", "c": "Technology", "s": 7999.98, "p": -3839.99}, {"l": "Motorola Smart Phone, Cordless", "c": "Technology", "s": 38931.04, "p": -4447.04}, {"l": "Lexmark MX611dhe Monochrome Laser Printer", "c": "Technology", "s": 16829.9, "p": -4589.97}, {"l": "Cubify CubeX 3D Printer Double Head Print", "c": "Technology", "s": 11099.96, "p": -8879.97}], "total": {"s": 12642501.91, "p": 1467457.29}};
+  C = { pink: '#C3408B', red: '#E04243', mute: '#CBD2E3', sub: '#6B6B6B' };
+
+  STORY = {"growth": [{"cap": {"a": "Profit grew faster than sales: ", "b": "+102.5%", "c": " vs. +90.3% from 2012 to 2015."}, "focus": [3]}, {"cap": {"a": "That's ", "b": "26.5% a year", "c": " for profit, 23.9% for sales."}, "focus": []}], "markets": [{"cap": {"a": "Asia Pacific sells the most, ", "b": "$4.04M", "c": ", but its 10.0% margin is below the company's 11.6%."}, "focus": ["Asia Pacific"]}, {"cap": {"a": "Europe earns the most profit: ", "b": "$449.6K", "c": " at a 13.7% margin."}, "focus": ["Europe"]}, {"cap": {"a": "USCA also beats the company margin, at ", "b": "12.9%", "c": "."}, "focus": ["USCA"]}], "regions": [{"cap": {"a": "", "b": "Three regions lose money", "c": ": Western Asia, Western Africa and Central Asia, $111.6K combined."}, "focus": ["Western Asia", "Western Africa", "Central Asia"]}, {"cap": {"a": "Southeastern Asia earns just ", "b": "2.0%", "c": " on $884.4K of sales; South America, 4.6%."}, "focus": ["Southeastern Asia", "South America"]}, {"cap": {"a": "Eastern Europe, North Africa, Central Africa and Canada earn ", "b": "24% or more", "c": ", on small sales."}, "focus": ["Eastern Europe", "North Africa", "Central Africa", "Canada"]}], "subcats": [{"cap": {"a": "Tables is the ", "b": "only loss-maker", "c": ": −$64.1K on $757.0K of sales."}, "focus": ["Tables"]}, {"cap": {"a": "Furniture overall earns just ", "b": "6.9%", "c": " on $4.11M of sales."}, "focus": ["Bookcases", "Chairs", "Furnishings", "Tables"]}, {"cap": {"a": "Technology leads with ", "b": "$663.8K", "c": " profit at 14.0%; Office Supplies is close at 13.7%."}, "focus": ["Accessories", "Copiers", "Machines", "Phones"]}], "bands": [{"cap": {"a": "Discounts above 20% ", "b": "lost $814.7K", "c": " on $1.93M of sales."}, "focus": ["21–30%", "31–40%", "41–50%", "Over 50%"]}, {"cap": {"a": "Over 50% off is the worst: a ", "b": "−111.0%", "c": " margin, losing $412.6K on $371.6K."}, "focus": ["Over 50%"]}, {"cap": {"a": "Undiscounted sales earned ", "b": "$1.77M", "c": " at 25.3%, more than the company's total profit."}, "focus": ["0%"]}], "segments": [{"cap": {"a": "Segment margins barely differ: ", "b": "11.5% to 12.0%", "c": "."}, "focus": []}, {"cap": {"a": "Consumer is simply bigger: ", "b": "51.5%", "c": " of sales and $749.2K of profit."}, "focus": ["Consumer"]}], "ship": [{"cap": {"a": "Faster shipping costs more but doesn't earn more: ", "b": "11.4%", "c": " margin for Same Day vs. 11.8% for Standard."}, "focus": ["Standard Class", "Same Day"]}, {"cap": {"a": "Same Day costs ", "b": "$43.00", "c": " per line vs. $20.09 for Standard Class, which takes 5.00 days."}, "focus": ["Same Day"]}], "customers": [{"cap": {"a": "The top 10 customers are only ", "b": "1.08%", "c": " of sales."}, "focus": []}, {"cap": {"a": "Two of them lose money: Sean Miller ", "b": "−$1.8K", "c": " on $23.7K, and Becky Martin −$1.9K."}, "focus": ["Sean Miller", "Becky Martin"]}], "products": [{"cap": {"a": "Best product: the Canon imageCLASS 2200 copier, ", "b": "$25.2K", "c": " profit on $61.6K."}, "focus": ["Canon imageCLASS 2200 Advanced Copier"]}, {"cap": {"a": "Worst: the Cubify CubeX 3D printer (double head), ", "b": "−$8.9K", "c": " on $11.1K."}, "focus": ["Cubify CubeX 3D Printer Double Head Print"]}, {"cap": {"a": "Tables and 3D printers keep showing up among the losers.", "b": "", "c": ""}, "focus": ["Bevis Round Table, Adjustable Height", "Cubify CubeX 3D Printer Triple Head Print", "Cubify CubeX 3D Printer Double Head Print"]}]};
+  setStep = (k, n) => { const len = this.STORY[k].length; this.setState((s) => ({ story: Object.assign({}, s.story, { [k]: Math.max(0, Math.min(len - 1, n)) }), hov: null })); };
+  setHov = (k) => { if (this.state.hov !== k) this.setState({ hov: k }); };
+  clearHov = () => { if (this.state.hov != null) this.setState({ hov: null }); };
+  measureRef = (el) => {
+    if (el === this._el) return;
+    if (this._ro) { this._ro.disconnect(); this._ro = null; }
+    this._el = el;
+    if (el && typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver((es) => {
+        const w = Math.floor(es[0].contentRect.width);
+        if (w > 0 && Math.abs(w - this.state.cw) > 1) this.setState({ cw: w });
+      });
+      this._ro.observe(el);
+    }
+  };
+  componentWillUnmount() { if (this._ro) this._ro.disconnect(); }
+
+  money(v, dp) {
+    const a = Math.abs(v), s = v < 0 ? '\u2212' : '';
+    if (a >= 1e6) return s + '$' + (a / 1e6).toFixed(dp == null ? 2 : dp) + 'M';
+    if (a >= 1e3) return s + '$' + (a / 1e3).toFixed(dp == null ? 1 : dp) + 'K';
+    return s + '$' + a.toFixed(dp == null ? 2 : dp);
+  }
+  axMoney(v) {
+    if (v === 0) return '$0';
+    const a = Math.abs(v), s = v < 0 ? '\u2212' : '';
+    if (a >= 1e6) return s + '$' + (+(a / 1e6).toFixed(1)) + 'M';
+    if (a >= 1e3) return s + '$' + Math.round(a / 1e3) + 'K';
+    return s + '$' + a;
+  }
+  pct(v, dp) { return (v < 0 ? '\u2212' : '') + (Math.abs(v) * 100).toFixed(dp == null ? 1 : dp) + '%'; }
+  axPct(v) { return (v < 0 ? '\u2212' : '') + Math.round(Math.abs(v) * 100) + '%'; }
+  tw(s, fs) { return String(s).length * (fs || 12) * 0.58; }
+  r1(v) { return Math.round(v * 10) / 10; }
+  fKey(key) { return String(key).split('_')[0]; }
+  hasF(key) { const f = this.F && this.F[this.fKey(key)]; return !!(f && f.size); }
+  inF(key, label) { const f = this.F && this.F[this.fKey(key)]; return !!(f && f.has(label)); }
+  isHovIn(key) { const h = this.state.hov; return h != null && h.indexOf(key + ':') === 0; }
+
+  tip(x, y, w, t) {
+    const lines = t.lines;
+    const tw = Math.round(Math.max(168, Math.min(270, Math.max(this.tw(t.title, 12.5), ...lines.map((l) => this.tw(l.k + l.v, 12) + (l.c ? 30 : 16))) + 28)));
+    const th = 32 + lines.length * 18;
+    let left = x + 14;
+    if (left + tw > w) left = x - 14 - tw;
+    if (left < 0) left = Math.max(0, Math.min(w - tw, x - tw / 2));
+    const top = Math.max(-8, y - th / 2);
+    return { left: Math.round(left), top: Math.round(top), w: tw, title: t.title,
+      lines: lines.map((l) => ({ k: l.k, v: l.v, c: l.c || 'transparent', sw: l.c ? 'inline-block' : 'none' })) };
+  }
+
+  /* Horizontal bar — chat spec: 28px rows, 20px bars, dotted separators, value at bar end. */
+  hbar(key, spec, w) {
+    const C = this.C, hov = this.state.hov, any = this.isHovIn(key) || this.hasF(key);
+    const data = spec.rows.filter((r) => !r.header && !r.gap);
+    const narrow = w < 480;
+    const maxCh = Math.max(...data.map((r) => this.tw(r.label)));
+    const labW = Math.round(Math.min(w * (narrow ? 0.4 : 0.45), Math.max(64, maxCh + 14)));
+    const vw = Math.max(...data.map((r) => this.tw(spec.fmt(r.v)))) + 10;
+    const hasNeg = spec.min < 0;
+    const pL = labW + (hasNeg ? vw : 2), pR = w - vw;
+    const X = (v) => pL + (v - spec.min) / (spec.max - spec.min) * (pR - pL);
+    const x0 = X(Math.max(0, spec.min));
+    const mT = spec.ref ? 24 : 0;
+    let y = mT, di = 0, hovRow = null;
+    const rows = [], heads = [], gaps = [];
+    spec.rows.forEach((r) => {
+      if (r.header) { heads.push({ y: y + 10, label: r.label, note: r.note || '' }); y += 34; return; }
+      if (r.gap) { gaps.push({ y: y, text: r.text, toggle: r.toggle }); y += 36; return; }
+      const i = di++, k = key + ':' + i, by = y + 4, bh = 20;
+      const neg = r.v < 0, xv = X(r.v);
+      const bx = neg ? xv : x0, bw = Math.max(Math.abs(xv - x0), 1.5);
+      const isT = hov === k, isH = isT || this.inF(key, r.label);
+      const base = r.color || (neg ? C.red : spec.color);
+      const row = { sepY: y, hitH: 28, by: by, bh: bh, bx: this.r1(bx), bw: this.r1(bw),
+        fill: (any && !isH) ? C.mute : base, origin: neg ? 'right center' : 'left center',
+        label: r.label, vText: spec.fmt(r.v), vx: this.r1(neg ? bx - 6 : bx + bw + 6), vtf: neg ? 'translateX(-100%)' : 'none',
+        track: !hasNeg, trackX: this.r1(x0), trackW: this.r1(pR - x0),
+        aria: r.label + ', ' + spec.fmt(r.v), enter: () => this.setHov(k), leave: this.clearHov };
+      rows.push(row);
+      if (isT) hovRow = { row: row, r: r, x: neg ? bx : bx + bw };
+      y += 28;
+    });
+    const bottom = y;
+    const ticks = (spec.ticks || []).map((t) => ({ x: this.r1(X(t)), text: spec.axFmt(t) }));
+    const out = { w: w, h: bottom + (ticks.length ? 30 : 4), labW: labW - 10, sepW: this.r1(pR), rows: rows, heads: heads, gaps: gaps,
+      ticks: ticks, hasTicks: ticks.length > 0, axisY: bottom, axisX: this.r1(pL), axisW: this.r1(pR - pL), tickY: bottom + 9,
+      zx: this.r1(x0), zy: mT, zh: bottom - mT, ref: null, tip: null, more: spec.more || null, title: spec.title || '' };
+    if (spec.ref) {
+      const rx = X(spec.ref.v);
+      out.ref = { x: this.r1(rx), y1: mT - 6, len: bottom - mT + 6, label: spec.ref.label,
+        tf: rx + 70 > w ? 'translateX(-100%)' : (rx - 70 < 0 ? 'none' : 'translateX(-50%)') };
+    }
+    if (hovRow) out.tip = this.tip(hovRow.x, hovRow.row.by + 10, w, hovRow.r.tip);
+    return out;
+  }
+
+  /* Small multiples — one label column, a panel per measure, each on its own zero-based scale. */
+  sm(key, spec, w) {
+    const C = this.C, hov = this.state.hov, any = this.isHovIn(key) || this.hasF(key);
+    if (w < 520) {
+      return { narrow: true, wide: false, parts: spec.panels.map((p, pi) => this.hbar(key + '_' + pi, {
+        title: p.title, rows: spec.rows.map((r, i) => ({ label: r.label, v: p.vals[i], tip: r.tip })),
+        min: p.min, max: p.max, fmt: p.fmt, axFmt: p.fmt, color: this.acc }, w)) };
+    }
+    const maxCh = Math.max(...spec.rows.map((r) => this.tw(r.label)));
+    const labW = Math.round(Math.min(w * 0.32, Math.max(64, maxCh + 16)));
+    const n = spec.panels.length, gap = 24;
+    const pw = (w - labW - gap * (n - 1)) / n;
+    const mT = 28;
+    const panels = spec.panels.map((p, pi) => {
+      const px0 = labW + pi * (pw + gap);
+      const vw = Math.max(...p.vals.map((v) => this.tw(p.fmt(v)))) + 10;
+      const hasNeg = p.min < 0;
+      const pL = px0 + (hasNeg ? vw : 0), pR = px0 + pw - vw;
+      const X = (v) => pL + (v - p.min) / (p.max - p.min) * (pR - pL);
+      return { p: p, X: X, x: this.r1(px0), zx: this.r1(X(Math.max(0, p.min))), title: p.title, tw: this.r1(pw) };
+    });
+    let y = mT, hovRow = null;
+    const rows = spec.rows.map((r, i) => {
+      const k = key + ':' + i, isT = hov === k, isH = isT || this.inF(key, r.label), by = y + 4;
+      const cells = panels.map((pn) => {
+        const v = pn.p.vals[i], neg = v < 0, x0 = pn.X(Math.max(0, pn.p.min)), xv = pn.X(v);
+        const bx = neg ? xv : x0, bw = Math.max(Math.abs(xv - x0), 1.5);
+        return { bx: this.r1(bx), bw: this.r1(bw), fill: (any && !isH) ? C.mute : (neg ? C.red : this.acc),
+          origin: neg ? 'right center' : 'left center', vx: this.r1(neg ? bx - 6 : bx + bw + 6),
+          vtf: neg ? 'translateX(-100%)' : 'none', vText: pn.p.fmt(v), by: by };
+      });
+      const row = { sepY: y, by: by, label: r.label, cells: cells, aria: r.label + ': ' + r.tip.lines.map((l) => l.k + ' ' + l.v).join(', '),
+        enter: () => this.setHov(k), leave: this.clearHov };
+      if (isT) hovRow = { row: row, r: r, x: cells[0].bx + cells[0].bw };
+      y += 28;
+      return row;
+    });
+    const out = { narrow: false, wide: true, w: w, h: y + 6, labW: labW - 10, endY: y, zy: mT, zh: y - mT,
+      panels: panels.map((p) => ({ x: p.x, zx: p.zx, title: p.title, tw: p.tw })), rows: rows, tip: null };
+    if (hovRow) out.tip = this.tip(Math.min(hovRow.x, w * 0.6), hovRow.row.by + 10, w, hovRow.r.tip);
+    return out;
+  }
+
+  /* Column — labels sit on the dotted gridlines, solid zero baseline drawn over the bars. */
+  col(key, spec, w) {
+    const C = this.C, hov = this.state.hov, any = this.isHovIn(key) || this.hasF(key);
+    const h = spec.h || 290, mT = 28, mB = 46, mL = 40, mR = 2;
+    const plotH = h - mT - mB, n = spec.cats.length, plotW = w - mL - mR, band = plotW / n;
+    const cw = Math.max(Math.min(band - 12, 40), 8);
+    const Y = (v) => mT + (spec.max - v) / (spec.max - spec.min) * plotH;
+    const y0 = Y(0), narrow = band < 56;
+    const grid = spec.ticks.map((t) => ({ y: this.r1(Y(t)), ly: this.r1(Y(t) - 17), text: spec.axFmt(t) }));
+    let hovC = null;
+    const cols = spec.cats.map((c, i) => {
+      const k = key + ':' + i, isT = hov === k, isH = isT || this.inF(key, c.label), neg = c.v < 0, yv = Y(c.v);
+      const x = mL + i * band + (band - cw) / 2;
+      const col = { x: this.r1(x), w: this.r1(cw), y: this.r1(Math.min(yv, y0)), h: this.r1(Math.max(Math.abs(yv - y0), 1.5)),
+        fill: (any && !isH) ? C.mute : (neg ? C.red : this.acc), origin: neg ? 'center top' : 'center bottom',
+        cx: this.r1(x + cw / 2), vy: this.r1(neg ? yv + 5 : yv - 18), vText: spec.fmt(c.v),
+        lab: c.label, sub: narrow ? c.subShort : c.sub, hitX: this.r1(mL + i * band), hitW: this.r1(band),
+        aria: c.tip.title + ': ' + c.tip.lines.map((l) => l.k + ' ' + l.v).join(', '),
+        enter: () => this.setHov(k), leave: this.clearHov };
+      if (isT) hovC = { col: col, c: c, y: neg ? yv : yv };
+      return col;
+    });
+    const out = { w: w, h: h, grid: grid, cols: cols, zy: this.r1(y0), labY: h - 38, subY: h - 20, plotTop: mT, plotH: plotH,
+      unit: spec.unit, unitX: this.r1(this.tw(grid[0].text) + 8), unitY: grid[0].ly, fs: narrow ? 11 : 12, tip: null };
+    if (hovC) out.tip = this.tip(hovC.col.cx + cw / 2, Math.min(hovC.y, h - 80), w, hovC.c.tip);
+    return out;
+  }
+
+  /* Line — two series, direct labels on the last point instead of a legend. */
+  line(key, spec, w) {
+    const hov = this.state.hov, any = this.isHovIn(key);
+    const h = spec.h || 260, mT = 28, mB = 30, mL = 34, endW = w < 480 ? 92 : 118;
+    const n = spec.xs.length, plotW = w - mL - endW, plotH = h - mT - mB;
+    const X = (i) => mL + i / (n - 1) * plotW;
+    const Y = (v) => mT + (spec.max - v) / (spec.max - spec.min) * plotH;
+    const grid = spec.ticks.map((t) => ({ y: this.r1(Y(t)), ly: this.r1(Y(t) - 17), text: spec.axFmt(t) }));
+    const fIdx = this.F && this.F[key] && this.F[key].size ? [...this.F[key]][0] : null;
+    const hi = any ? +hov.split(':')[1] : fIdx;
+    const series = spec.series.map((s) => ({ d: s.vals.map((v, i) => (i ? 'L' : 'M') + this.r1(X(i)) + ' ' + this.r1(Y(v))).join(' '), c: s.c }));
+    const dots = [];
+    spec.series.forEach((s) => s.vals.forEach((v, i) => {
+      const big = hi === i, sz = big ? 10 : 7;
+      dots.push({ left: this.r1(X(i) - sz / 2), top: this.r1(Y(v) - sz / 2), sz: sz, c: s.c });
+    }));
+    const ends = spec.series.map((s) => ({ x: this.r1(X(n - 1) + 12), y: Y(s.vals[n - 1]) - 8, text: s.end, c: s.c }));
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 18) ends[i].y = ends[i - 1].y + 18;
+    ends.forEach((e) => { e.y = this.r1(e.y); });
+    const step = plotW / (n - 1);
+    const hits = spec.xs.map((x, i) => ({ x: this.r1(X(i) - step / 2), w: this.r1(step), aria: spec.tips[i].title + ': ' + spec.tips[i].lines.map((l) => l.k + ' ' + l.v).join(', '),
+      enter: () => this.setHov(key + ':' + i), leave: this.clearHov }));
+    const xl = spec.xs.map((x, i) => ({ x: this.r1(X(i)), text: x, tf: i === 0 ? 'translateX(-4px)' : (i === n - 1 ? 'translateX(-50%)' : 'translateX(-50%)') }));
+    const out = { w: w, h: h, grid: grid, s0: series[0], s1: series[1], dots: dots, ends: ends, hits: hits, xl: xl,
+      xlY: h - 18, axisY: this.r1(mT + plotH), plotTop: mT, plotH: plotH, vb: '0 0 ' + w + ' ' + h,
+      unit: spec.unit, unitX: this.r1(this.tw(grid[grid.length - 1].text) + 8), unitY: grid[grid.length - 1].ly,
+      guide: null, tip: null };
+    if (hi != null) {
+      out.guide = { x: this.r1(X(hi)) };
+      if (any) out.tip = this.tip(X(hi), mT + plotH / 2, w, spec.tips[hi]);
+    }
+    return out;
+  }
+
+  /* Scatter — y crops to the data range (allowed for scatter), reference line at company margin. */
+  /* Scatter — chat spec: 360 tall, margins 24/16/40/52, dotted gridlines only (no axis lines or ticks),
+     values above horizontal / left of vertical gridlines, no label at the axis minimum, 6px points. */
+  scatter(key, spec, w) {
+    const hov = this.state.hov, any = this.isHovIn(key) || this.hasF(key);
+    const h = 360, mT = 34, mB = 40, mR = 16;
+    const yLabW = Math.max(...spec.yTicks.map((t) => this.tw(spec.yFmt(t))));
+    const mL = Math.round(yLabW + 12);
+    const plotW = w - mL - mR, plotH = h - mT - mB;
+    const X = (v) => mL + (v - spec.xMin) / (spec.xMax - spec.xMin) * plotW;
+    const Y = (v) => mT + (spec.yMax - v) / (spec.yMax - spec.yMin) * plotH;
+    const xtY = h - 34;
+    const hg = spec.yTicks.map((t) => ({ y: this.r1(Y(t)), ly: this.r1(Y(t) - 7), text: spec.yFmt(t), line: t > spec.yMin }));
+    const vg = spec.xTicks.map((t) => ({ x: this.r1(X(t)), text: spec.xFmt(t), line: t > spec.xMin }));
+    let hp = null;
+    const pts = spec.pts.map((p, i) => {
+      const k = key + ':' + i, isT = hov === k, isH = isT || this.inF(key, p.label), cx = X(p.x), cy = Y(p.y), sz = isH ? 16 : 12;
+      const left = cx > w - 150, dim = any && !isH;
+      const o = { left: this.r1(cx - sz / 2), top: this.r1(cy - sz / 2), sz: sz, op: dim ? 0.18 : 1, c: this.acc,
+        ring: isH ? '2px solid #FFFFFF' : '0', shadow: isH ? '0 0 0 1px ' + this.acc : 'none', lop: dim ? 0.45 : 1,
+        label: p.label, lx: this.r1(left ? cx - 12 : cx + 12), ly: this.r1(cy - 8), ltf: left ? 'translateX(-100%)' : 'none',
+        aria: p.tip.title + ': ' + p.tip.lines.map((l) => l.k + ' ' + l.v).join(', '),
+        enter: () => this.setHov(k), leave: this.clearHov };
+      if (isT) hp = { cx: cx, cy: cy, p: p };
+      return o;
+    });
+    const ry = Y(spec.ref.v);
+    const out = { w: w, h: h, mR: mR, mL: mL, mT: mT, plotW: this.r1(plotW), plotH: this.r1(plotH), yLabR: this.r1(w - mL + 8),
+      axisY: this.r1(mT + plotH), hg: hg, vg: vg, xtY: xtY, xUnitY: h - 18, unitY: mT - 20, pts: pts,
+      ref: { y: this.r1(ry), x: mL, len: this.r1(plotW), label: spec.ref.label, ly: this.r1(ry - 17) },
+      unit: spec.yUnit, xUnit: spec.xUnit, tip: null };
+    if (hp) out.tip = this.tip(hp.cx, hp.cy, w, hp.p.tip);
+    return out;
+  }
+
+  spark(vals) {
+    const mn = Math.min(...vals), mx = Math.max(...vals), n = vals.length;
+    const X = (i) => 2 + i / (n - 1) * 96, Y = (v) => 28 - (v - mn) / (mx - mn) * 22;
+    const pts = vals.map((v, i) => this.r1(X(i)) + ' ' + this.r1(Y(v)));
+    return { d: 'M' + pts.join(' L'), area: 'M' + pts.join(' L') + ' L98 32 L2 32 Z', dx: this.r1(X(n - 1)), dy: this.r1(Y(vals[n - 1]) / 32 * 100) };
+  }
+
+  table(cols, rows) {
+    return { gtc: 'minmax(132px, 2fr) repeat(' + (cols.length - 1) + ', minmax(76px, 1fr))',
+      head: cols.map((c, i) => ({ t: c, al: i ? 'right' : 'left' })),
+      rows: rows.map((r) => ({ cells: r.map((c, i) => ({ t: c, al: i ? 'right' : 'left' })) })) };
+  }
+
+  frame(key, built, table) {
+    const on = !!this.state.tables[key];
+    return Object.assign({}, built, { tableOn: on, chartOn: !on, toggleLabel: on ? 'Show chart' : 'Show table',
+      toggle: () => this.setState((s) => ({ tables: Object.assign({}, s.tables, { [key]: !s.tables[key] }), hov: null })), tbl: table });
+  }
+
+  renderVals() {
+    const D = this.D, C = this.C, st = this.state;
+    this.acc = this.props.accent ?? '#1B66C4';
+    const acc = this.acc;
+    const show = this.props.showCharts ?? true;
+    this.F = {};
+    Object.keys(this.STORY).forEach((k) => { if (st.exp[k]) this.F[k] = new Set(this.STORY[k][st.story[k] || 0].focus); });
+    const w = Math.max(260, (st.cw || 722) - 42);
+    const T = D.total, TM = T.p / T.s;
+    const m = (v, dp) => this.money(v, dp), p = (v, dp) => this.pct(v, dp);
+    const sw = (c) => c;
+
+    /* 1 Growth */
+    const Y = D.years, s0 = Y[0].s, p0 = Y[0].p;
+    const growth = this.frame('growth', this.line('growth', {
+      xs: Y.map((y) => String(y.y)), min: 50, max: 250, ticks: [50, 100, 150, 200, 250], axFmt: (t) => String(t), unit: 'Index, 2012 = 100',
+      series: [
+        { c: acc, vals: Y.map((y) => y.s / s0 * 100), end: 'Sales +' + p(Y[3].s / s0 - 1) },
+        { c: C.pink, vals: Y.map((y) => y.p / p0 * 100), end: 'Profit +' + p(Y[3].p / p0 - 1) }],
+      tips: Y.map((y) => ({ title: String(y.y), lines: [
+        { k: 'Sales', v: m(y.s) + '  (' + Math.round(y.s / s0 * 100) + ')', c: acc },
+        { k: 'Profit', v: m(y.p) + '  (' + Math.round(y.p / p0 * 100) + ')', c: C.pink },
+        { k: 'Margin', v: p(y.p / y.s) }] }))
+    }, w), this.table(['Year', 'Sales', 'Profit', 'Margin', 'Sales index', 'Profit index'],
+      Y.map((y) => [String(y.y), m(y.s), m(y.p), p(y.p / y.s), String(Math.round(y.s / s0 * 100)), String(Math.round(y.p / p0 * 100))])));
+
+    /* 2 Markets */
+    const mk = D.markets.slice().sort((a, b) => b.s - a.s);
+    const mtip = (r) => ({ title: r.l, lines: [{ k: 'Sales', v: m(r.s) }, { k: 'Profit', v: m(r.p) }, { k: 'Margin', v: p(r.p / r.s) }, { k: 'Share of sales', v: p(r.s / T.s) }] });
+    const markets = this.frame('markets', this.scatter('markets', {
+      xMin: 0, xMax: 5e6, xTicks: [0, 1e6, 2e6, 3e6, 4e6, 5e6], xFmt: (t) => this.axMoney(t), xUnit: 'Sales',
+      yMin: 0, yMax: 0.16, yTicks: [0, 0.04, 0.08, 0.12, 0.16], yFmt: (t) => this.axPct(t), yUnit: 'Profit margin',
+      ref: { v: TM, label: 'Company ' + p(TM) },
+      pts: mk.map((r) => ({ label: r.l, x: r.s, y: r.p / r.s, tip: mtip(r) }))
+    }, w), this.table(['Market', 'Sales', 'Profit', 'Margin', 'Share of sales'], mk.map((r) => [r.l, m(r.s), m(r.p), p(r.p / r.s), p(r.s / T.s)])));
+
+    /* 3 Regions */
+    const rg = D.regions.slice().sort((a, b) => b.p / b.s - a.p / a.s);
+    const rgOpen = !!st.open.regions;
+    const toggleRg = () => this.setState((s) => ({ open: Object.assign({}, s.open, { regions: !s.open.regions }), hov: null }));
+    const rrow = (r) => ({ label: r.l, v: r.p / r.s, tip: { title: r.l, lines: [{ k: 'Margin', v: p(r.p / r.s) }, { k: 'Sales', v: m(r.s) }, { k: 'Profit', v: m(r.p) }] } });
+    const rgRows = rgOpen ? rg.map(rrow) : rg.slice(0, 6).map(rrow).concat([{ gap: true, text: 'Show ' + (rg.length - 12) + ' more regions', toggle: toggleRg }], rg.slice(-6).map(rrow));
+    const regions = this.frame('regions', this.hbar('regions', {
+      rows: rgRows, min: -0.4, max: 0.3, ticks: [-0.4, -0.2, 0, 0.2], fmt: (v) => p(v), axFmt: (v) => this.axPct(v), color: acc,
+      ref: { v: TM, label: 'Company ' + p(TM) }, more: rgOpen ? { text: 'Show fewer regions', toggle: toggleRg } : null
+    }, w), this.table(['Region', 'Margin', 'Sales', 'Profit'], rg.map((r) => [r.l, p(r.p / r.s), m(r.s), m(r.p)])));
+
+    /* 4 Category / sub-category */
+    const cats = {};
+    D.subcats.forEach((r) => { const c = cats[r.c] || (cats[r.c] = { l: r.c, s: 0, p: 0, items: [] }); c.s += r.s; c.p += r.p; c.items.push(r); });
+    const catList = Object.values(cats).sort((a, b) => b.p - a.p);
+    const scRows = [];
+    catList.forEach((c) => {
+      scRows.push({ header: true, label: c.l, note: m(c.s) + ' sales, ' + p(c.p / c.s) + ' margin' });
+      c.items.sort((a, b) => b.p - a.p).forEach((r) => scRows.push({ label: r.l, v: r.p,
+        tip: { title: r.l + ' (' + c.l + ')', lines: [{ k: 'Profit', v: m(r.p) }, { k: 'Sales', v: m(r.s) }, { k: 'Margin', v: p(r.p / r.s) }, { k: 'Units', v: r.q.toLocaleString('en-US') }] } }));
+    });
+    const subcats = this.frame('subcats', this.hbar('subcats', {
+      rows: scRows, min: -100000, max: 300000, ticks: [-100000, 0, 100000, 200000, 300000], fmt: (v) => m(v), axFmt: (v) => this.axMoney(v), color: acc
+    }, w), this.table(['Sub-category', 'Category', 'Sales', 'Profit', 'Margin'],
+      catList.flatMap((c) => c.items.map((r) => [r.l, c.l, m(r.s), m(r.p), p(r.p / r.s)]))));
+
+    /* 5 Discount bands */
+    const bands = this.frame('bands', this.col('bands', {
+      min: -1.2, max: 0.4, ticks: [-1.2, -0.8, -0.4, 0, 0.4], axFmt: (t) => this.axPct(t), fmt: (v) => p(v), unit: 'Profit margin',
+      cats: D.bands.map((b) => ({ label: b.l, v: b.p / b.s, sub: p(b.s / T.s) + ' of sales', subShort: p(b.s / T.s, 0),
+        tip: { title: 'Discount ' + b.l, lines: [{ k: 'Margin', v: p(b.p / b.s) }, { k: 'Sales', v: m(b.s) }, { k: 'Profit', v: m(b.p) }, { k: 'Share of sales', v: p(b.s / T.s) }] } }))
+    }, w), this.table(['Discount', 'Sales', 'Share of sales', 'Profit', 'Margin'], D.bands.map((b) => [b.l, m(b.s), p(b.s / T.s), m(b.p), p(b.p / b.s)])));
+
+    /* 6 Segments */
+    const sg = D.segments.slice().sort((a, b) => b.s - a.s);
+    const segments = this.frame('segments', this.sm('segments', {
+      rows: sg.map((r) => ({ label: r.l, tip: { title: r.l, lines: [{ k: 'Share of sales', v: p(r.s / T.s) }, { k: 'Margin', v: p(r.p / r.s) }, { k: 'Sales', v: m(r.s) }, { k: 'Profit', v: m(r.p) }] } })),
+      panels: [
+        { title: 'Share of sales', vals: sg.map((r) => r.s / T.s), min: 0, max: 0.6, fmt: (v) => p(v) },
+        { title: 'Profit margin', vals: sg.map((r) => r.p / r.s), min: 0, max: 0.15, fmt: (v) => p(v) }]
+    }, w), this.table(['Segment', 'Sales', 'Share of sales', 'Profit', 'Margin'], sg.map((r) => [r.l, m(r.s), p(r.s / T.s), m(r.p), p(r.p / r.s)])));
+
+    /* 7 Ship mode */
+    const shOrder = ['Standard Class', 'Second Class', 'First Class', 'Same Day'];
+    const sh = shOrder.map((l) => D.ship.find((r) => r.l === l));
+    const ship = this.frame('ship', this.sm('ship', {
+      rows: sh.map((r) => ({ label: r.l, tip: { title: r.l, lines: [{ k: 'Share of sales', v: p(r.s / T.s) }, { k: 'Shipping cost per line', v: '$' + r.c.toFixed(2) }, { k: 'Days to ship', v: r.d.toFixed(2) }, { k: 'Margin', v: p(r.p / r.s) }] } })),
+      panels: [
+        { title: 'Share of sales', vals: sh.map((r) => r.s / T.s), min: 0, max: 0.7, fmt: (v) => p(v) },
+        { title: 'Shipping cost per line', vals: sh.map((r) => r.c), min: 0, max: 50, fmt: (v) => '$' + v.toFixed(2) },
+        { title: 'Days to ship', vals: sh.map((r) => r.d), min: 0, max: 6, fmt: (v) => v.toFixed(2) },
+        { title: 'Profit margin', vals: sh.map((r) => r.p / r.s), min: 0, max: 0.15, fmt: (v) => p(v) }]
+    }, w), this.table(['Ship mode', 'Share of sales', 'Cost per line', 'Days to ship', 'Margin'], sh.map((r) => [r.l, p(r.s / T.s), '$' + r.c.toFixed(2), r.d.toFixed(2), p(r.p / r.s)])));
+
+    /* 8 Customers */
+    const cu = D.customers;
+    const customers = this.frame('customers', this.sm('customers', {
+      rows: cu.map((r, i) => ({ label: r.l, tip: { title: r.l + ' (#' + (i + 1) + ' by sales)', lines: [{ k: 'Sales', v: m(r.s) }, { k: 'Profit', v: m(r.p) }, { k: 'Margin', v: p(r.p / r.s) }] } })),
+      panels: [
+        { title: 'Sales', vals: cu.map((r) => r.s), min: 0, max: 25000, fmt: (v) => m(v) },
+        { title: 'Profit', vals: cu.map((r) => r.p), min: -3000, max: 10000, fmt: (v) => m(v) }]
+    }, w), this.table(['Customer', 'Sales', 'Profit', 'Margin'], cu.map((r) => [r.l, m(r.s), m(r.p), p(r.p / r.s)])));
+
+    /* 9 Products */
+    const pr = D.products;
+    const prow = (r) => ({ label: r.l, v: r.p, tip: { title: r.l, lines: [{ k: 'Profit', v: m(r.p) }, { k: 'Sales', v: m(r.s) }, { k: 'Margin', v: p(r.p / r.s) }, { k: 'Category', v: r.c }] } });
+    const products = this.frame('products', this.hbar('products', {
+      rows: [{ header: true, label: 'Most profitable', note: '' }].concat(pr.slice(0, 5).map(prow), [{ header: true, label: 'Least profitable', note: '' }], pr.slice(5).map(prow)),
+      min: -10000, max: 30000, ticks: [-10000, 0, 10000, 20000, 30000], fmt: (v) => m(v), axFmt: (v) => this.axMoney(v), color: acc
+    }, w), this.table(['Product', 'Category', 'Sales', 'Profit', 'Margin'], pr.map((r) => [r.l, r.c, m(r.s), m(r.p), p(r.p / r.s)])));
+
+    const kpi = {
+      sales: this.spark(Y.map((y) => y.s)), profit: this.spark(Y.map((y) => y.p)),
+      orders: this.spark(Y.map((y) => y.o)), units: this.spark(Y.map((y) => y.u))
+    };
+    return { c: { growth, markets, regions, subcats, bands, segments, ship, customers, products }, kpi: kpi,
+      acc: acc, show: show, measureRef: this.measureRef,
+      exp: Object.fromEntries(["growth", "markets", "regions", "subcats", "bands", "segments", "ship", "customers", "products"].map((k) => [k, !!st.exp[k]])),
+      tg: Object.fromEntries(["growth", "markets", "regions", "subcats", "bands", "segments", "ship", "customers", "products"].map((k) => [k, () => this.setState((s) => ({ exp: Object.assign({}, s.exp, { [k]: !s.exp[k] }), story: Object.assign({}, s.story, { [k]: 0 }), hov: null }))])),
+      story: Object.fromEntries(["growth", "markets", "regions", "subcats", "bands", "segments", "ship", "customers", "products"].map((k) => { const n = this.STORY[k].length, i = st.story[k] || 0; return [k, { counter: 'Step ' + (i + 1) + ' of ' + n, atStart: i === 0, atEnd: i === n - 1,
+        back: () => this.setStep(k, i - 1), next: () => this.setStep(k, i + 1), restart: () => this.setStep(k, 0), cap: this.STORY[k][i].cap,
+        dots: this.STORY[k].map((x, j) => ({ label: 'Go to step ' + (j + 1), go: () => this.setStep(k, j), bg: j === i ? 'oklch(.2 .012904 274)' : (j < i ? 'oklch(.68 .019697 274)' : 'oklch(.92 .005707 274)') })) }]; })),
+      lab: Object.fromEntries(["growth", "markets", "regions", "subcats", "bands", "segments", "ship", "customers", "products"].map((k) => [k, st.exp[k] ? 'Show less' : 'Tell me more'])),
+      rot: Object.fromEntries(["growth", "markets", "regions", "subcats", "bands", "segments", "ship", "customers", "products"].map((k) => [k, st.exp[k] ? 'rotate(180deg)' : 'none'])) };
+  }
+}
+
+</script>
+<script src="dc-lite.js"></script>
+</body>
+</html>
