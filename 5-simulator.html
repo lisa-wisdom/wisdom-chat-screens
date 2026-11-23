@@ -7,12 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <!-- Tokens and components from the wisdom/design system -->
-<link rel="stylesheet" href="wisdom-design.css?v=11">
+<link rel="stylesheet" href="wisdom-design.css?v=13">
 <style>
   /* Page layout only; every color, size, radius and font comes from wisdom/design tokens. */
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--wisdom-bg-surface); color: var(--wisdom-fg-primary); font: 400 var(--wisdom-text-body-m)/var(--wisdom-leading-body-m) var(--wisdom-font-sans); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
-  .page { max-width: 1240px; margin: 0 auto; padding: var(--wisdom-space-32) var(--wisdom-space-32) var(--wisdom-space-64); }
+  .page { max-width: 1240px; margin: 0 auto; padding: var(--wisdom-space-32) var(--wisdom-space-32) var(--wisdom-space-48); }
   header h1 { margin: 0 0 var(--wisdom-space-8); }
   header p { margin: 0; color: var(--wisdom-fg-secondary); max-width: 78ch; }
   .layout { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: var(--wisdom-space-32); margin-top: var(--wisdom-space-28); align-items: start; }
@@ -54,7 +54,7 @@
   #chart .wisdom-tooltip div span:last-child { color: var(--wisdom-fg-primary); }
   .note { color: var(--wisdom-fg-secondary); }
   .note b { color: var(--wisdom-fg-primary); font-weight: 500; }
-  .note ul { margin: var(--wisdom-space-6) 0 0; padding-left: var(--wisdom-space-18); }
+  .note ul { margin: var(--wisdom-space-6) 0 0; padding-left: var(--wisdom-space-20); }
   .note li { margin: var(--wisdom-space-2) 0; }
   @media (max-width: 980px) {
     .page { padding: var(--wisdom-space-24) var(--wisdom-space-16) var(--wisdom-space-48); }
