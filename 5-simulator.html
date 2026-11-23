@@ -1,99 +1,63 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulation: impact of management priorities</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Tokens and components from the wisdom/design system -->
+<link rel="stylesheet" href="wisdom-design.css?v=11">
 <style>
-  /* Tokens and component styles measured from the Wisdom UI kit (canary.gowisdom.ai/ui-kit) */
-  :root {
-    --text: #202124; --text-2: rgba(20, 24, 31, 0.7); --kpi-label: #4B5563; --kpi-value: #111827;
-    --card-line: #ECEEF4; --tile-line: #E5E7EB; --soft: #F6F7F9; --seg-bg: #ECEEF4;
-    --primary: #5263FF; --primary-08: rgba(82, 99, 255, 0.08);
-    --switch-off: #A7A8BB; --label: #101318; --slider-track: #F3F4F6; --slider-fill: #5060DA;
-    --total: #1B66C4; --up: #219855; --down: #E04243; --grid: #DBDFE9; --axis: #787E8A;
-  }
+  /* Page layout only; every color, size, radius and font comes from wisdom/design tokens. */
   * { box-sizing: border-box; }
-  body { margin: 0; background: #FFFFFF; color: var(--text); font: 400 14px/21px Inter, "Inter Fallback", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
-  .page { max-width: 1240px; margin: 0 auto; padding: 32px 32px 64px; }
-  header h1 { margin: 0 0 6px; font-size: 19.2px; line-height: 24.96px; font-weight: 600; color: var(--text); }
-  header p { margin: 0; color: var(--text-2); max-width: 78ch; }
-  .layout { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 32px; margin-top: 28px; align-items: start; }
-  .levers { display: flex; flex-direction: column; gap: 12px; }
+  body { margin: 0; background: var(--wisdom-bg-surface); color: var(--wisdom-fg-primary); font: 400 var(--wisdom-text-body-m)/var(--wisdom-leading-body-m) var(--wisdom-font-sans); -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .page { max-width: 1240px; margin: 0 auto; padding: var(--wisdom-space-32) var(--wisdom-space-32) var(--wisdom-space-64); }
+  header h1 { margin: 0 0 var(--wisdom-space-8); }
+  header p { margin: 0; color: var(--wisdom-fg-secondary); max-width: 78ch; }
+  .layout { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: var(--wisdom-space-32); margin-top: var(--wisdom-space-28); align-items: start; }
+  .levers { display: flex; flex-direction: column; gap: var(--wisdom-space-12); }
+  .wisdom-card { padding: var(--wisdom-space-20); }
+  .lever.off { background: var(--wisdom-bg-subtle); }
+  .lever.off .ctrl, .lever.off .fact { opacity: 0.5; }
+  .lever-head { display: flex; align-items: flex-start; gap: var(--wisdom-space-10); }
+  .lever-head .wf-switch { margin-top: 2px; }
+  .lever-head .title { flex: 1; margin: 0; cursor: pointer; }
+  .lever-head .n { color: var(--wisdom-fg-secondary); margin-right: var(--wisdom-space-4); }
+  .delta { flex: none; white-space: nowrap; font-weight: 500; }
+  .delta.pos { color: var(--wisdom-fg-feedback-success); }
+  .delta.neg { color: var(--wisdom-fg-feedback-danger); }
+  .delta.zero { color: var(--wisdom-fg-secondary); }
+  .fact { margin: var(--wisdom-space-6) 0 0 34px; color: var(--wisdom-fg-secondary); }
+  .ctrl { margin: var(--wisdom-space-14) 0 0 34px; display: flex; flex-direction: column; gap: var(--wisdom-space-8); }
+  .ctrl[hidden], .wf-slider[hidden] { display: none; }
+  .assume { margin: var(--wisdom-space-2) 0 0; color: var(--wisdom-fg-secondary); }
+  .wf-slider-unit { color: var(--wisdom-fg-secondary); }
+  .wf-slider-copy > :first-child { margin-right: var(--wisdom-space-8); }
+  .sr-input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; opacity: 0; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
+  .actions { display: flex; }
 
-  /* Lever cards: VizCard */
-  .lever { border: 1px solid var(--card-line); border-radius: 8px; padding: 20px; background: #FFFFFF; }
-  .lever.off { background: var(--soft); }
-  .lever.off .ctrl, .lever.off .delta, .lever.off .fact { opacity: 0.5; }
-  .lever-head { display: flex; align-items: flex-start; gap: 12px; }
-  .lever-head label { flex: 1; font-size: 14px; line-height: 18.2px; font-weight: 600; color: var(--text); cursor: pointer; padding-top: 2px; }
-  .lever-head .n { color: var(--text-2); font-weight: 500; margin-right: 4px; }
-  .delta { flex: none; font-weight: 600; white-space: nowrap; padding-top: 2px; }
-  .delta.pos { color: var(--up); } .delta.neg { color: var(--down); } .delta.zero { color: var(--text-2); }
-  .fact { margin: 6px 0 0 54px; font-size: 13px; line-height: 18.2px; color: var(--text-2); }
-  .ctrl { margin: 14px 0 0 54px; display: flex; flex-direction: column; gap: 12px; }
-
-  /* Switch: UI Kit Components/Switch */
-  input.sw { appearance: none; -webkit-appearance: none; flex: none; position: relative; width: 42px; height: 21px; margin: 0; border-radius: 9999px; background: var(--switch-off); cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); }
-  input.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%; background: #FFFFFF; transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1); }
-  input.sw:checked { background: var(--primary); }
-  input.sw:checked::after { transform: translateX(21px); }
-
-  /* Slider: Live App Components/Primitives/Slider */
-  /* Label: Live App Components/Primitives/Label — 14px/500, 8px above the slider */
-  .row { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: end; font-size: 14px; line-height: 18px; }
-  .row[hidden] { display: none; }
-  .row label { font-weight: 500; color: var(--label); }
-  .row output { font-weight: 500; color: var(--label); min-width: 44px; text-align: right; }
-  .row input[type=range] { grid-column: 1 / -1; width: 100%; height: 18px; margin: 0; background: transparent; appearance: none; -webkit-appearance: none; cursor: pointer; --p: 50%; }
-  .row input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 9999px; background: linear-gradient(to right, var(--slider-fill) 0 var(--p), var(--slider-track) var(--p) 100%); }
-  .row input[type=range]::-moz-range-track { height: 6px; border-radius: 9999px; background: var(--slider-track); }
-  .row input[type=range]::-moz-range-progress { height: 6px; border-radius: 9999px; background: var(--slider-fill); }
-  .row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: -5px; border-radius: 50%; background: var(--soft); border: 1px solid var(--slider-fill); box-shadow: 0 1px 2px rgba(15, 18, 35, 0.05), 0 2px 6px -1px rgba(15, 18, 35, 0.06); }
-  .row input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--soft); border: 1px solid var(--slider-fill); box-shadow: 0 1px 2px rgba(15, 18, 35, 0.05), 0 2px 6px -1px rgba(15, 18, 35, 0.06); }
-
-  /* Segmented control: UI Kit Components/SegmentedControl, sliding solid small */
-  .seg { display: inline-flex; align-self: flex-start; height: 26px; padding: 2px; gap: 2px; border-radius: 14px; background: var(--seg-bg); }
-  .seg label { position: relative; display: flex; align-items: center; height: 22px; padding: 0 16px; border-radius: 11px; font-size: 14px; font-weight: 500; color: var(--text-2); cursor: pointer; white-space: nowrap; transition: background-color 150ms, box-shadow 150ms, color 150ms; }
-  .seg input { position: absolute; opacity: 0; pointer-events: none; }
-  .seg label:has(input:checked) { background: #FFFFFF; color: var(--text); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.04), inset 0 1px 4px rgba(255, 255, 255, 0.25); }
-  .seg label:has(input:focus-visible) { outline: 2px solid var(--primary); outline-offset: 1px; }
-  .assume { margin: 0; font-size: 12px; line-height: 18px; color: var(--text-2); }
-
-  /* Results */
-  .right { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
-  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  /* KPI tile: Live App Components/Layout/KpiTile */
-  .kpi { border: 1px solid var(--tile-line); border-radius: 8px; padding: 14px; background: #FFFFFF; display: flex; flex-direction: column; gap: 6px; }
-  .kpi .k { font-size: 12px; line-height: 18px; color: var(--kpi-label); }
-  .kpi .v { font-size: 22px; line-height: 24.2px; font-weight: 600; color: var(--kpi-value); }
-  .kpi .s { font-size: 12px; line-height: 18px; color: var(--kpi-label); }
-  .kpi .s b { font-weight: 600; }
-  /* Chart card: UI Kit Components/VizCard */
-  .card { border: 1px solid var(--card-line); border-radius: 8px; padding: 24px; background: #FFFFFF; }
-  .card h2 { margin: 0; font-size: 14px; line-height: 18.2px; font-weight: 600; color: var(--text); }
-  .card .sub { margin: 4px 0 0; font-size: 13px; line-height: 18.2px; color: var(--text-2); }
-  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 16px 0 6px; font-size: 13px; color: var(--text); }
-  .legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .legend i { width: 10px; height: 10px; display: inline-block; }
+  .right { position: sticky; top: var(--wisdom-space-16); display: flex; flex-direction: column; gap: var(--wisdom-space-16); }
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--wisdom-space-12); }
+  .kpi { display: flex; flex-direction: column; gap: var(--wisdom-space-4); padding: var(--wisdom-space-16); }
+  .kpi .k, .kpi .s { color: var(--wisdom-fg-secondary); }
+  .kpi .s b { font-weight: 500; }
+  .card-sub { margin: var(--wisdom-space-4) 0 0; color: var(--wisdom-fg-secondary); }
+  .legend { display: flex; gap: var(--wisdom-space-16); flex-wrap: wrap; margin: var(--wisdom-space-16) 0 var(--wisdom-space-6); }
+  .legend span { display: inline-flex; align-items: center; gap: var(--wisdom-space-6); }
+  .legend i { width: 10px; height: 10px; border-radius: var(--wisdom-radius-2); display: inline-block; }
   #chart { position: relative; }
-  #chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .tip { position: absolute; pointer-events: none; background: #FFFFFF; border: 1px solid var(--card-line); border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.04); padding: 10px 12px; font-size: 12px; min-width: 190px; z-index: 5; }
-  .tip b { display: block; font-size: 13px; color: var(--text); margin-bottom: 4px; }
-  .tip div { display: flex; justify-content: space-between; gap: 14px; color: var(--text-2); line-height: 18px; }
-  .tip div span:last-child { color: var(--text); font-weight: 500; }
-  .note { border-radius: 8px; background: var(--soft); padding: 14px 18px; font-size: 13px; line-height: 18.2px; color: var(--text-2); }
-  .note b { color: var(--text); font-weight: 600; }
-  .note ul { margin: 6px 0 0; padding-left: 18px; }
-  .note li { margin: 2px 0; }
-  /* Button: UI Kit Components/Button, text primary */
-  button.reset { align-self: flex-start; font: 500 14px/24.5px Inter, "Inter Fallback", system-ui, sans-serif; color: var(--primary); background: transparent; border: 0; border-radius: 50px; padding: 4.8px 10px; margin-left: -10px; cursor: pointer; transition: background-color 150ms; }
-  button.reset:hover { background: var(--primary-08); }
-  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  #chart svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--wisdom-font-sans); }
+  #chart .wisdom-tooltip { position: absolute; max-width: none; min-width: 200px; padding: var(--wisdom-space-8) var(--wisdom-space-10); z-index: 5; box-shadow: var(--wisdom-shadow-m); }
+  #chart .wisdom-tooltip b { display: block; font-weight: 500; margin-bottom: var(--wisdom-space-2); }
+  #chart .wisdom-tooltip div { display: flex; justify-content: space-between; gap: var(--wisdom-space-16); color: var(--wisdom-fg-secondary); }
+  #chart .wisdom-tooltip div span:last-child { color: var(--wisdom-fg-primary); }
+  .note { color: var(--wisdom-fg-secondary); }
+  .note b { color: var(--wisdom-fg-primary); font-weight: 500; }
+  .note ul { margin: var(--wisdom-space-6) 0 0; padding-left: var(--wisdom-space-18); }
+  .note li { margin: var(--wisdom-space-2) 0; }
   @media (max-width: 980px) {
-    .page { padding: 24px 16px 48px; }
+    .page { padding: var(--wisdom-space-24) var(--wisdom-space-16) var(--wisdom-space-48); }
     .layout { grid-template-columns: 1fr; }
     .right { position: static; order: -1; }
     .kpis { grid-template-columns: 1fr; }
@@ -103,80 +67,104 @@
 <body>
 <div class="page">
   <header>
-    <h1>Simulation: impact of management priorities</h1>
-    <p>Each recommendation from the chat is a lever. Turn levers on and off and adjust their assumptions to see how much each one moves profit, starting from 2012–2015 actuals for Global Superstore.</p>
+    <h1 class="text-heading-m">Simulation: impact of management priorities</h1>
+    <p class="text-body-m">Each recommendation from the chat is a lever. Turn levers on and off and adjust their assumptions to see how much each one moves profit, starting from 2012–2015 actuals for Global Superstore.</p>
   </header>
 
   <div class="layout">
     <section class="levers" aria-label="Management decisions">
 
-      <div class="lever" data-lever="discount">
-        <div class="lever-head"><input type="checkbox" role="switch" class="sw" id="on-discount" checked><label for="on-discount"><span class="n">1</span>Tighten or require approval for discounts above 20%</label><span class="delta" id="d-discount"></span></div>
-        <p class="fact">Today: $1.93M of sales at discounts above 20% lose $814.7K.</p>
+      <div class="wisdom-card lever" data-card-variant="outlined" data-lever="discount">
+        <div class="lever-head">
+          <span class="wf-switch" role="switch" tabindex="0" aria-checked="true" data-checked aria-labelledby="t-discount" data-lever-switch="discount"><span class="wf-switch-thumb" data-checked></span></span>
+          <p class="title text-heading-xs" id="t-discount"><span class="n">1</span>Tighten or require approval for discounts above 20%</p>
+          <span class="delta text-label-m" id="d-discount"></span>
+        </div>
+        <p class="fact text-body-s">Today: $1.93M of sales at discounts above 20% lose $814.7K.</p>
         <div class="ctrl">
-          <div class="row"><label for="keep">Share of those deals kept at a 20% discount</label><output id="keep-o"></output><input type="range" id="keep" min="0" max="100" step="5" value="70"></div>
-          <p class="assume">The rest are lost. Kept deals pay list price less 20%. Band discounts are taken at their midpoints (25%, 35%, 45%, and 60% for over 50%). Even at a 20% discount these deals roughly break even, so most of the gain comes from ending the losses, not from the volume kept.</p>
+          <div class="wf-slider wf-slider-filled" data-slider="keep" data-min="0" data-max="100" data-step="5" data-value="70" data-unit="%">Deals kept at a 20% discount</div>
+          <p class="assume text-body-xs">The rest are lost. Kept deals pay list price less 20%. Band discounts are taken at their midpoints (25%, 35%, 45%, and 60% for over 50%). Even at a 20% discount these deals roughly break even, so most of the gain comes from ending the losses, not from the volume kept.</p>
         </div>
       </div>
 
-      <div class="lever" data-lever="regions">
-        <div class="lever-head"><input type="checkbox" role="switch" class="sw" id="on-regions" checked><label for="on-regions"><span class="n">2</span>Fix Western Asia, Western Africa, Central Asia and Southeastern Asia</label><span class="delta" id="d-regions"></span></div>
-        <p class="fact">Today: the first three lose $111.6K; Southeastern Asia earns a 2.0% margin on $884.4K.</p>
+      <div class="wisdom-card lever" data-card-variant="outlined" data-lever="regions">
+        <div class="lever-head">
+          <span class="wf-switch" role="switch" tabindex="0" aria-checked="true" data-checked aria-labelledby="t-regions" data-lever-switch="regions"><span class="wf-switch-thumb" data-checked></span></span>
+          <p class="title text-heading-xs" id="t-regions"><span class="n">2</span>Fix Western Asia, Western Africa, Central Asia and Southeastern Asia</p>
+          <span class="delta text-label-m" id="d-regions"></span>
+        </div>
+        <p class="fact text-body-s">Today: the first three lose $111.6K; Southeastern Asia earns a 2.0% margin on $884.4K.</p>
         <div class="ctrl">
-          <div class="row"><label for="close">Margin gap closed toward the 11.6% company average</label><output id="close-o"></output><input type="range" id="close" min="0" max="100" step="5" value="50"></div>
-          <p class="assume">Product and discount mix changes; sales stay the same.</p>
+          <div class="wf-slider wf-slider-filled" data-slider="close" data-min="0" data-max="100" data-step="5" data-value="50" data-unit="%">Margin gap closed</div>
+          <p class="assume text-body-xs">The gap is to the 11.6% company average. Product and discount mix changes; sales stay the same.</p>
         </div>
       </div>
 
-      <div class="lever" data-lever="tables">
-        <div class="lever-head"><input type="checkbox" role="switch" class="sw" id="on-tables" checked><label for="on-tables"><span class="n">3</span>Reprice or cut Tables</label><span class="delta" id="d-tables"></span></div>
-        <p class="fact">Today: Tables lose $64.1K on $757.0K of sales.</p>
+      <div class="wisdom-card lever" data-card-variant="outlined" data-lever="tables">
+        <div class="lever-head">
+          <span class="wf-switch" role="switch" tabindex="0" aria-checked="true" data-checked aria-labelledby="t-tables" data-lever-switch="tables"><span class="wf-switch-thumb" data-checked></span></span>
+          <p class="title text-heading-xs" id="t-tables"><span class="n">3</span>Reprice or cut Tables</p>
+          <span class="delta text-label-m" id="d-tables"></span>
+        </div>
+        <p class="fact text-body-s">Today: Tables lose $64.1K on $757.0K of sales.</p>
         <div class="ctrl">
-          <div class="seg" role="radiogroup" aria-label="Tables action">
-            <label><input type="radio" name="tables" value="reprice" checked><span>Reprice</span></label>
-            <label><input type="radio" name="tables" value="drop"><span>Discontinue</span></label>
+          <div class="wisdom-segmented-control text-label-m" role="radiogroup" aria-label="Tables action" data-variant="contained" data-size="m" data-group="tables">
+            <span class="wisdom-segmented-indicator" aria-hidden="true"></span>
+            <span class="wisdom-segment" role="radio" data-value="reprice"><span class="wisdom-segment-label"><span class="wisdom-segment-label-content">Reprice</span></span></span>
+            <span class="wisdom-segment" role="radio" data-value="drop"><span class="wisdom-segment-label"><span class="wisdom-segment-label-content">Discontinue</span></span></span>
           </div>
-          <div class="row" id="price-row"><label for="price">Price increase</label><output id="price-o"></output><input type="range" id="price" min="0" max="20" step="1" value="8"></div>
-          <div class="row" id="elas-row"><label for="elas">Volume lost per 1% price increase</label><output id="elas-o"></output><input type="range" id="elas" min="0" max="3" step="0.25" value="1"></div>
+          <div class="wf-slider wf-slider-filled" data-slider="price" data-min="0" data-max="20" data-step="1" data-value="8" data-unit="%">Price increase</div>
+          <div class="wf-slider wf-slider-filled" data-slider="elas" data-min="0" data-max="3" data-step="0.25" data-value="1" data-unit="%">Volume lost per 1% price rise</div>
         </div>
       </div>
 
-      <div class="lever" data-lever="growth">
-        <div class="lever-head"><input type="checkbox" role="switch" class="sw" id="on-growth" checked><label for="on-growth"><span class="n">4</span>Protect growth in Technology and Office Supplies</label><span class="delta" id="d-growth"></span></div>
-        <p class="fact">Today: $8.53M of sales at a 13.9% margin, including Copiers and Phones.</p>
+      <div class="wisdom-card lever" data-card-variant="outlined" data-lever="growth">
+        <div class="lever-head">
+          <span class="wf-switch" role="switch" tabindex="0" aria-checked="true" data-checked aria-labelledby="t-growth" data-lever-switch="growth"><span class="wf-switch-thumb" data-checked></span></span>
+          <p class="title text-heading-xs" id="t-growth"><span class="n">4</span>Protect growth in Technology and Office Supplies</p>
+          <span class="delta text-label-m" id="d-growth"></span>
+        </div>
+        <p class="fact text-body-s">Today: $8.53M of sales at a 13.9% margin, including Copiers and Phones.</p>
         <div class="ctrl">
-          <div class="row"><label for="growth">Extra sales growth</label><output id="growth-o"></output><input type="range" id="growth" min="0" max="20" step="1" value="5"></div>
-          <p class="assume">New sales earn each category’s current margin (Technology 14.0%, Office Supplies 13.7%).</p>
+          <div class="wf-slider wf-slider-filled" data-slider="growth" data-min="0" data-max="20" data-step="1" data-value="5" data-unit="%">Extra sales growth</div>
+          <p class="assume text-body-xs">New sales earn each category’s current margin (Technology 14.0%, Office Supplies 13.7%).</p>
         </div>
       </div>
 
-      <div class="lever" data-lever="customers">
-        <div class="lever-head"><input type="checkbox" role="switch" class="sw" id="on-customers" checked><label for="on-customers"><span class="n">5</span>Review unprofitable high-sales customers</label><span class="delta" id="d-customers"></span></div>
-        <p class="fact">Today: 2 of the top 10 customers (Sean Miller, Becky Martin) lose $3.7K on $34.2K.</p>
+      <div class="wisdom-card lever" data-card-variant="outlined" data-lever="customers">
+        <div class="lever-head">
+          <span class="wf-switch" role="switch" tabindex="0" aria-checked="true" data-checked aria-labelledby="t-customers" data-lever-switch="customers"><span class="wf-switch-thumb" data-checked></span></span>
+          <p class="title text-heading-xs" id="t-customers"><span class="n">5</span>Review unprofitable high-sales customers</p>
+          <span class="delta text-label-m" id="d-customers"></span>
+        </div>
+        <p class="fact text-body-s">Today: 2 of the top 10 customers (Sean Miller, Becky Martin) lose $3.7K on $34.2K.</p>
         <div class="ctrl">
-          <div class="seg" role="radiogroup" aria-label="Customer action">
-            <label><input type="radio" name="cust" value="fix" checked><span>Fix terms to break even</span></label>
-            <label><input type="radio" name="cust" value="drop"><span>Stop serving</span></label>
+          <div class="wisdom-segmented-control text-label-m" role="radiogroup" aria-label="Customer action" data-variant="contained" data-size="m" data-group="cust">
+            <span class="wisdom-segmented-indicator" aria-hidden="true"></span>
+            <span class="wisdom-segment" role="radio" data-value="fix"><span class="wisdom-segment-label"><span class="wisdom-segment-label-content">Fix terms to break even</span></span></span>
+            <span class="wisdom-segment" role="radio" data-value="drop"><span class="wisdom-segment-label"><span class="wisdom-segment-label-content">Stop serving</span></span></span>
           </div>
         </div>
       </div>
 
-      <button type="button" class="reset" id="reset">Reset to defaults</button>
+      <div class="actions">
+        <button type="button" id="reset" class="text-label-m _button_npk6q_1 _secondary_npk6q_74 _m_npk6q_159" data-button-variant="secondary" data-tone="neutral"><span class="_surface_npk6q_32" aria-hidden="true"></span><span class="_content_npk6q_116">Reset to defaults</span></button>
+      </div>
     </section>
 
     <section class="right" aria-label="Results">
       <div class="kpis">
-        <div class="kpi"><div class="k">Projected profit</div><div class="v" id="k-profit"></div><div class="s" id="k-profit-s"></div></div>
-        <div class="kpi"><div class="k">Projected margin</div><div class="v" id="k-margin"></div><div class="s" id="k-margin-s"></div></div>
-        <div class="kpi"><div class="k">Projected sales</div><div class="v" id="k-sales"></div><div class="s" id="k-sales-s"></div></div>
+        <div class="wisdom-card kpi" data-card-variant="outlined"><span class="k text-label-s">Projected profit</span><span class="v text-heading-m" id="k-profit"></span><span class="s text-body-xs" id="k-profit-s"></span></div>
+        <div class="wisdom-card kpi" data-card-variant="outlined"><span class="k text-label-s">Projected margin</span><span class="v text-heading-m" id="k-margin"></span><span class="s text-body-xs" id="k-margin-s"></span></div>
+        <div class="wisdom-card kpi" data-card-variant="outlined"><span class="k text-label-s">Projected sales</span><span class="v text-heading-m" id="k-sales"></span><span class="s text-body-xs" id="k-sales-s"></span></div>
       </div>
-      <div class="card">
-        <h2>Profit bridge</h2>
-        <p class="sub">2012–2015 profit, then the change from each decision · USD</p>
-        <div class="legend"><span><i style="background: var(--total)"></i>Profit</span><span><i style="background: var(--up)"></i>Increase</span><span><i style="background: var(--down)"></i>Decrease</span></div>
+      <div class="wisdom-card" data-card-variant="outlined">
+        <h2 class="text-heading-xs" style="margin: 0">Profit bridge</h2>
+        <p class="card-sub text-body-s">2012–2015 profit, then the change from each decision · USD</p>
+        <div class="legend text-body-s"><span><i style="background: var(--wisdom-bg-accent-blue-strong)"></i>Profit</span><span><i style="background: var(--wisdom-bg-accent-green-strong)"></i>Increase</span><span><i style="background: var(--wisdom-bg-accent-red-strong)"></i>Decrease</span></div>
         <div id="chart"></div>
       </div>
-      <div class="note">
+      <div class="wisdom-card note text-body-s" data-card-variant="subtle">
         <b>How to read this.</b> It’s a what-if model built from the chat’s totals, not a forecast.
         <ul>
           <li>The chat’s findings are descriptive, so customer reactions are assumptions you set with the sliders.</li>
@@ -189,36 +177,121 @@
 
 <script>
 (function () {
-  // Totals from the chat (Global Superstore, 2012–2015)
+  // ---------- Data: totals from the chat (Global Superstore, 2012–2015) ----------
   var BASE = { s: 12642501.91, p: 1467457.29 };
-  var DEEP = [ // discount bands above 20%: sales, profit, assumed average discount
+  var DEEP = [
     { s: 382554.69, p: -21155.61, d: 0.25 },
     { s: 701343.12, p: -166115.45, d: 0.35 },
     { s: 474688.31, p: -214829.37, d: 0.45 },
     { s: 371624.66, p: -412581.66, d: 0.60 }
   ];
-  var REGIONS = [
-    { s: 19311.46, p: -7282.01 },   // Central Asia
-    { s: 884423.17, p: 17852.33 },  // Southeastern Asia
-    { s: 173878.81, p: -50407.79 }, // Western Africa
-    { s: 317106.96, p: -53921.67 }  // Western Asia
-  ];
+  var REGIONS = [{ s: 19311.46, p: -7282.01 }, { s: 884423.17, p: 17852.33 }, { s: 173878.81, p: -50407.79 }, { s: 317106.96, p: -53921.67 }];
   var TABLES = { s: 757041.92, p: -64083.39 };
-  var GROW = [{ s: 4744557.5, p: 663778.74 }, { s: 3787492.51, p: 518595.83 }]; // Technology, Office Supplies
+  var GROW = [{ s: 4744557.5, p: 663778.74 }, { s: 3787492.51, p: 518595.83 }];
   var CUST = { s: 23669.2 + 10539.9, p: -1787.04 - 1878.79 };
   var CO_MARGIN = BASE.p / BASE.s;
-
-  var NAMES = {
-    discount: 'Discounts capped at 20%', regions: 'Problem regions fixed', tables: 'Tables repriced or cut',
-    growth: 'Growth protected', customers: 'Unprofitable customers'
-  };
+  var NAMES = { discount: 'Discounts capped at 20%', regions: 'Problem regions fixed', tables: 'Tables repriced or cut', growth: 'Growth protected', customers: 'Unprofitable customers' };
   var SHORT = { discount: ['Cap', 'discounts'], regions: ['Fix', 'regions'], tables: ['Tables'], growth: ['Protect', 'growth'], customers: ['Review', 'customers'] };
-  var DEFAULTS = { keep: 70, close: 50, price: 8, elas: 1, growth: 5 };
-
   var $ = function (id) { return document.getElementById(id); };
-  function val(id) { return Number($(id).value); }
-  function radio(name) { return document.querySelector('input[name="' + name + '"]:checked').value; }
 
+  // ---------- Switch (wisdom/design wf-switch) ----------
+  var levers = { discount: true, regions: true, tables: true, growth: true, customers: true };
+  function setSwitch(el, on) {
+    el.setAttribute('aria-checked', String(on));
+    [el, el.firstElementChild].forEach(function (n) { if (on) n.setAttribute('data-checked', ''); else n.removeAttribute('data-checked'); });
+  }
+  document.querySelectorAll('[data-lever-switch]').forEach(function (sw) {
+    var key = sw.dataset.leverSwitch;
+    var toggle = function () { levers[key] = !levers[key]; setSwitch(sw, levers[key]); update(); };
+    sw.addEventListener('click', toggle);
+    sw.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+    $('t-' + key).addEventListener('click', toggle);
+  });
+
+  // ---------- Filled slider (wisdom/design wf-slider-filled) ----------
+  var sliders = {};
+  function decimals(step) { var s = String(step); return s.indexOf('.') < 0 ? 0 : s.split('.')[1].length; }
+  document.querySelectorAll('[data-slider]').forEach(function (root) {
+    var key = root.dataset.slider, label = root.textContent.trim();
+    var min = Number(root.dataset.min), max = Number(root.dataset.max), step = Number(root.dataset.step), unit = root.dataset.unit || '';
+    var dp = decimals(step), id = 'sl-' + key;
+    root.setAttribute('role', 'group'); root.setAttribute('aria-labelledby', id + '-label'); root.setAttribute('data-orientation', 'horizontal');
+    root.innerHTML =
+      '<div class="wf-slider-control" data-orientation="horizontal">' +
+        '<div class="wf-slider-track" data-orientation="horizontal" style="position: relative">' +
+          '<div class="wf-slider-indicator" data-orientation="horizontal" style="position: relative; height: inherit; inset-inline-start: 0"></div>' +
+          '<div class="wf-slider-thumb" data-orientation="horizontal" style="position: absolute; top: 50%; translate: -50% -50%">' +
+            '<input class="sr-input" type="range" min="' + min + '" max="' + max + '" step="' + step + '" aria-label="' + label + '">' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="wf-slider-copy">' +
+        '<div id="' + id + '-label">' + label + '</div>' +
+        '<div class="wf-slider-values"><span class="wf-slider-value-part"><div class="wf-slider-number" data-filled>' +
+          '<input class="wf-slider-editor" data-filled type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="' + label + ' value">' +
+        '</div><span class="wf-slider-unit">' + unit + '</span></span></div>' +
+      '</div>';
+    var control = root.querySelector('.wf-slider-control'), track = root.querySelector('.wf-slider-track');
+    var ind = root.querySelector('.wf-slider-indicator'), thumb = root.querySelector('.wf-slider-thumb');
+    var range = root.querySelector('input[type=range]'), editor = root.querySelector('.wf-slider-editor');
+    var s = { value: Number(root.dataset.value), def: Number(root.dataset.value) };
+    s.set = function (v, silent) {
+      v = Math.min(max, Math.max(min, Math.round((v - min) / step) * step + min));
+      s.value = Number(v.toFixed(dp));
+      var pct = (s.value - min) / (max - min) * 100;
+      ind.style.width = pct + '%'; thumb.style.insetInlineStart = pct + '%';
+      range.value = s.value; range.setAttribute('aria-valuenow', s.value);
+      if (document.activeElement !== editor) editor.value = s.value.toFixed(dp);
+      editor.style.width = 'calc(' + Math.max(1, editor.value.length) + 'ch + var(--wisdom-space-4))';
+      if (!silent) update();
+    };
+    var fromX = function (x) { var r = track.getBoundingClientRect(); return min + (x - r.left) / r.width * (max - min); };
+    control.addEventListener('pointerdown', function (e) {
+      if (e.target === editor) return;
+      control.setPointerCapture(e.pointerId); control.setAttribute('data-dragging', ''); s.set(fromX(e.clientX)); range.focus({ preventScroll: true });
+      var move = function (ev) { s.set(fromX(ev.clientX)); };
+      var up = function () { control.removeAttribute('data-dragging'); control.removeEventListener('pointermove', move); control.removeEventListener('pointerup', up); };
+      control.addEventListener('pointermove', move); control.addEventListener('pointerup', up);
+    });
+    root.querySelector('.wf-slider-copy').addEventListener('pointerdown', function (e) {
+      if (e.target === editor) return;
+      var r = track.getBoundingClientRect(); if (e.clientX >= r.left && e.clientX <= r.right) { control.dispatchEvent(new PointerEvent('pointerdown', e)); }
+    });
+    range.addEventListener('input', function () { s.set(Number(range.value)); });
+    var commit = function () { var v = parseFloat(editor.value.replace(/[^0-9.\-]/g, '')); s.set(isNaN(v) ? s.value : v); editor.value = s.value.toFixed(dp); };
+    editor.addEventListener('change', commit);
+    editor.addEventListener('blur', commit);
+    editor.addEventListener('keydown', function (e) { if (e.key === 'Enter') { commit(); editor.blur(); } });
+    sliders[key] = s;
+    s.set(s.value, true);
+  });
+  function val(key) { return sliders[key].value; }
+
+  // ---------- Tabs (wisdom/design segmented control) ----------
+  var choice = { tables: 'reprice', cust: 'fix' };
+  function paintSeg(group) {
+    var root = document.querySelector('[data-group="' + group + '"]');
+    var segs = root.querySelectorAll('.wisdom-segment'), ind = root.querySelector('.wisdom-segmented-indicator');
+    segs.forEach(function (sg) {
+      var on = sg.dataset.value === choice[group];
+      sg.setAttribute('aria-checked', String(on)); sg.tabIndex = on ? 0 : -1;
+      if (on) { sg.setAttribute('data-checked', ''); sg.removeAttribute('data-unchecked'); ind.style.width = sg.offsetWidth + 'px'; ind.style.height = sg.offsetHeight + 'px'; ind.style.transform = 'translate(' + sg.offsetLeft + 'px, ' + sg.offsetTop + 'px)'; ind.style.opacity = '1'; }
+      else { sg.removeAttribute('data-checked'); sg.setAttribute('data-unchecked', ''); }
+    });
+  }
+  document.querySelectorAll('[data-group]').forEach(function (root) {
+    var group = root.dataset.group, segs = [].slice.call(root.querySelectorAll('.wisdom-segment'));
+    segs.forEach(function (sg, i) {
+      sg.addEventListener('click', function () { choice[group] = sg.dataset.value; paintSeg(group); update(); });
+      sg.addEventListener('keydown', function (e) {
+        var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+        if (!d) return; e.preventDefault();
+        var nx = segs[(i + d + segs.length) % segs.length]; choice[group] = nx.dataset.value; paintSeg(group); nx.focus(); update();
+      });
+    });
+  });
+
+  // ---------- Model ----------
   function money(v, dp) {
     var a = Math.abs(v), sgn = v < 0 ? '−' : '';
     if (a >= 1e6) return sgn + '$' + (a / 1e6).toFixed(dp == null ? 2 : dp) + 'M';
@@ -231,98 +304,65 @@
 
   function compute() {
     var r = {};
-    // 1. Discount cap
     var k = val('keep') / 100, dp1 = 0, ds1 = 0;
-    DEEP.forEach(function (b) {
-      var list = b.s / (1 - b.d), cost = b.s - b.p, newRev = list * 0.8, newP = newRev - cost;
-      dp1 += k * newP - b.p;
-      ds1 += k * newRev - b.s;
-    });
+    DEEP.forEach(function (b) { var list = b.s / (1 - b.d), cost = b.s - b.p, rev = list * 0.8; dp1 += k * (rev - cost) - b.p; ds1 += k * rev - b.s; });
     r.discount = { p: dp1, s: ds1 };
-    // 2. Regions
     var c = val('close') / 100, dp2 = 0;
-    REGIONS.forEach(function (g) { var m = g.p / g.s; dp2 += g.s * c * (CO_MARGIN - m); });
+    REGIONS.forEach(function (g) { dp2 += g.s * c * (CO_MARGIN - g.p / g.s); });
     r.regions = { p: dp2, s: 0 };
-    // 3. Tables
-    if (radio('tables') === 'drop') {
-      r.tables = { p: -TABLES.p, s: -TABLES.s };
-    } else {
-      var pr = val('price') / 100, e = val('elas'), vol = Math.max(0, 1 - e * pr);
-      var cost = TABLES.s - TABLES.p, s3 = TABLES.s * (1 + pr) * vol, p3 = s3 - cost * vol;
-      r.tables = { p: p3 - TABLES.p, s: s3 - TABLES.s };
+    if (choice.tables === 'drop') r.tables = { p: -TABLES.p, s: -TABLES.s };
+    else {
+      var pr = val('price') / 100, vol = Math.max(0, 1 - val('elas') * pr), cost3 = TABLES.s - TABLES.p, s3 = TABLES.s * (1 + pr) * vol;
+      r.tables = { p: s3 - cost3 * vol - TABLES.p, s: s3 - TABLES.s };
     }
-    // 4. Growth
     var g4 = val('growth') / 100;
     r.growth = { p: g4 * (GROW[0].p + GROW[1].p), s: g4 * (GROW[0].s + GROW[1].s) };
-    // 5. Customers
-    r.customers = radio('cust') === 'drop' ? { p: -CUST.p, s: -CUST.s } : { p: -CUST.p, s: 0 };
-    Object.keys(r).forEach(function (key) {
-      if (!$('on-' + key).checked) r[key] = { p: 0, s: 0, off: true };
-    });
+    r.customers = choice.cust === 'drop' ? { p: -CUST.p, s: -CUST.s } : { p: -CUST.p, s: 0 };
+    Object.keys(r).forEach(function (key) { if (!levers[key]) r[key] = { p: 0, s: 0, off: true }; });
     return r;
   }
 
-  function niceMax(v) {
-    var step = Math.pow(10, Math.floor(Math.log10(v)));
-    var steps = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
-    for (var i = 0; i < steps.length; i++) if (steps[i] * step >= v) return steps[i] * step;
-    return 10 * step;
-  }
-
+  // ---------- Chart (colors from wisdom/design accent tokens) ----------
+  var C = { total: 'var(--wisdom-bg-accent-blue-strong)', up: 'var(--wisdom-bg-accent-green-strong)', down: 'var(--wisdom-bg-accent-red-strong)', off: 'var(--wisdom-bg-highlight)',
+    grid: 'var(--wisdom-border-default)', axis: 'var(--wisdom-border-strong)', sub: 'var(--wisdom-fg-secondary)', text: 'var(--wisdom-fg-primary)',
+    upText: 'var(--wisdom-fg-feedback-success)', downText: 'var(--wisdom-fg-feedback-danger)' };
+  function niceMax(v) { var st = Math.pow(10, Math.floor(Math.log10(v))); var a = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]; for (var i = 0; i < a.length; i++) if (a[i] * st >= v) return a[i] * st; return 10 * st; }
   var hover = null;
   function draw(r) {
     var keys = ['discount', 'regions', 'tables', 'growth', 'customers'];
-    var bars = [{ key: 'base', label: ['2012–15', 'actual'], from: 0, to: BASE.p, kind: 'total' }];
-    var run = BASE.p;
-    keys.forEach(function (key) {
-      var d = r[key].p;
-      bars.push({ key: key, label: SHORT[key], from: run, to: run + d, kind: d >= 0 ? 'up' : 'down', d: d, off: r[key].off });
-      run += d;
-    });
+    var bars = [{ key: 'base', label: ['2012–15', 'actual'], from: 0, to: BASE.p, kind: 'total' }], run = BASE.p;
+    keys.forEach(function (key) { var d = r[key].p; bars.push({ key: key, label: SHORT[key], from: run, to: run + d, kind: d >= 0 ? 'up' : 'down', d: d, off: r[key].off }); run += d; });
     bars.push({ key: 'proj', label: ['Projected'], from: 0, to: run, kind: 'total' });
-
-    var W = Math.max(320, $('chart').clientWidth), H = 340, mL = 52, mR = 0, mT = 24, mB = 48;
+    var W = Math.max(320, $('chart').clientWidth), H = 340, mL = 52, mT = 24, mB = 48;
     var top = Math.max.apply(null, bars.map(function (b) { return Math.max(b.from, b.to); }));
-    var yMax = niceMax(top * 1.08), ticks = 5;
-    var Y = function (v) { return mT + (1 - v / yMax) * (H - mT - mB); };
-    var band = (W - mL - mR) / bars.length, cw = Math.min(band * 0.6, 72);
+    var yMax = niceMax(top * 1.08), ticks = 5, Y = function (v) { return mT + (1 - v / yMax) * (H - mT - mB); };
+    var band = (W - mL) / bars.length, cw = Math.min(band * 0.6, 72);
+    var t = function (x, y, txt, style, anchor) { return '<text x="' + x + '" y="' + y + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + ' style="' + style + '">' + txt + '</text>'; };
     var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Profit bridge: ' + money(BASE.p) + ' actual to ' + money(run) + ' projected">';
     for (var i = 0; i <= ticks; i++) {
       var tv = yMax * i / ticks, ty = Y(tv);
-      if (i > 0) svg += '<line x1="0" x2="' + W + '" y1="' + ty + '" y2="' + ty + '" stroke="#DBDFE9" stroke-dasharray="1 3" stroke-linecap="round"/>';
-      svg += '<text x="0" y="' + (ty - 6) + '" font-size="12" fill="rgba(20,24,31,0.7)">' + axMoney(tv) + (i === ticks ? '   Profit' : '') + '</text>';
+      if (i > 0) svg += '<line x1="0" x2="' + W + '" y1="' + ty + '" y2="' + ty + '" style="stroke: ' + C.grid + '" stroke-dasharray="1 3" stroke-linecap="round"/>';
+      svg += t(0, ty - 6, axMoney(tv) + (i === ticks ? '   Profit' : ''), 'font-size: 12px; fill: ' + C.sub);
     }
     bars.forEach(function (b, i) {
-      var x = mL + i * band + (band - cw) / 2, y1 = Y(Math.max(b.from, b.to)), y2 = Y(Math.min(b.from, b.to));
-      var h = Math.max(1.5, y2 - y1);
-      var fill = b.kind === 'total' ? '#1B66C4' : (b.kind === 'up' ? '#219855' : '#E04243');
-      var dim = hover != null && hover !== i ? 0.45 : 1;
-      if (b.off) fill = '#C9CFDD';
-      svg += '<rect x="' + x + '" y="' + y1 + '" width="' + cw + '" height="' + h + '" fill="' + fill + '" opacity="' + dim + '"/>';
-      if (i < bars.length - 1) {
-        var ny = Y(b.to);
-        svg += '<line x1="' + (x + cw) + '" x2="' + (x + band) + '" y1="' + ny + '" y2="' + ny + '" stroke="#787E8A" stroke-width="0.75" stroke-dasharray="2 2"/>';
-      }
+      var x = mL + i * band + (band - cw) / 2, y1 = Y(Math.max(b.from, b.to)), y2 = Y(Math.min(b.from, b.to)), h = Math.max(1.5, y2 - y1);
+      var fill = b.off ? C.off : (b.kind === 'total' ? C.total : (b.kind === 'up' ? C.up : C.down));
+      svg += '<rect x="' + x + '" y="' + y1 + '" width="' + cw + '" height="' + h + '" rx="2" style="fill: ' + fill + '; opacity: ' + (hover != null && hover !== i ? 0.45 : 1) + '"/>';
+      if (i < bars.length - 1) { var ny = Y(b.to); svg += '<line x1="' + (x + cw) + '" x2="' + (x + band) + '" y1="' + ny + '" y2="' + ny + '" style="stroke: ' + C.axis + '" stroke-width="0.75" stroke-dasharray="2 2"/>'; }
       var lab = b.kind === 'total' ? money(b.to) : (b.off ? 'Off' : signed(b.d));
-      var ly = (b.kind === 'down' ? y2 + 15 : y1 - 6);
-      svg += '<text x="' + (x + cw / 2) + '" y="' + ly + '" text-anchor="middle" font-size="12" font-weight="600" fill="' + (b.kind === 'total' ? '#202124' : (b.off ? '#6B6B6B' : fill)) + '">' + lab + '</text>';
-      b.label.forEach(function (t, j) {
-        svg += '<text x="' + (x + cw / 2) + '" y="' + (H - mB + 18 + j * 15) + '" text-anchor="middle" font-size="12" fill="rgba(20,24,31,0.7)">' + t + '</text>';
-      });
+      var lc = b.kind === 'total' ? C.text : (b.off ? C.sub : (b.kind === 'up' ? C.upText : C.downText));
+      svg += t(x + cw / 2, b.kind === 'down' ? y2 + 15 : y1 - 6, lab, 'font-size: 12px; font-weight: 500; fill: ' + lc, 'middle');
+      b.label.forEach(function (l, j) { svg += t(x + cw / 2, H - mB + 18 + j * 15, l, 'font-size: 12px; fill: ' + C.sub, 'middle'); });
       svg += '<rect class="hit" data-i="' + i + '" x="' + (mL + i * band) + '" y="' + mT + '" width="' + band + '" height="' + (H - mT - mB) + '" fill="transparent"/>';
     });
-    svg += '<line x1="0" x2="' + W + '" y1="' + Y(0) + '" y2="' + Y(0) + '" stroke="#787E8A" stroke-width="1"/>';
-    svg += '</svg>';
+    svg += '<line x1="0" x2="' + W + '" y1="' + Y(0) + '" y2="' + Y(0) + '" style="stroke: ' + C.axis + '"/></svg>';
     var tip = '';
     if (hover != null) {
       var hb = bars[hover], hx = mL + hover * band + band / 2;
       var title = hb.key === 'base' ? '2012–2015 actual profit' : (hb.key === 'proj' ? 'Projected profit' : NAMES[hb.key]);
-      var rows = hb.kind === 'total'
-        ? [['Profit', money(hb.to)], ['Change vs. actual', hb.key === 'proj' ? signed(hb.to - BASE.p) : '—']]
-        : [['Change', hb.off ? 'Off' : signed(hb.d)], ['Running total', money(hb.to)]];
-      var left = hx + 16 > W - 220 ? hx - 216 : hx + 16;
-      tip = '<div class="tip" style="left:' + left + 'px; top:' + (Y(Math.max(hb.from, hb.to)) - 10) + 'px"><b>' + title + '</b>' +
-        rows.map(function (rw) { return '<div><span>' + rw[0] + '</span><span>' + rw[1] + '</span></div>'; }).join('') + '</div>';
+      var rows = hb.kind === 'total' ? [['Profit', money(hb.to)], ['Change vs. actual', hb.key === 'proj' ? signed(hb.to - BASE.p) : '—']] : [['Change', hb.off ? 'Off' : signed(hb.d)], ['Running total', money(hb.to)]];
+      var left = hx + 16 > W - 230 ? hx - 226 : hx + 16;
+      tip = '<div class="wisdom-tooltip text-body-s" style="left:' + left + 'px; top:' + (Y(Math.max(hb.from, hb.to)) - 10) + 'px"><b>' + title + '</b>' + rows.map(function (rw) { return '<div><span>' + rw[0] + '</span><span>' + rw[1] + '</span></div>'; }).join('') + '</div>';
     }
     $('chart').innerHTML = svg + tip;
     $('chart').querySelectorAll('.hit').forEach(function (el) {
@@ -332,25 +372,18 @@
   }
 
   function update() {
-    document.querySelectorAll('input[type=range]').forEach(function (el) { el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); });
-    $('keep-o').textContent = val('keep') + '%';
-    $('close-o').textContent = val('close') + '%';
-    $('price-o').textContent = val('price') + '%';
-    $('elas-o').textContent = val('elas').toFixed(2) + '%';
-    $('growth-o').textContent = val('growth') + '%';
-    var dropTables = radio('tables') === 'drop';
-    $('price-row').hidden = dropTables; $('elas-row').hidden = dropTables;
-
+    document.querySelector('[data-slider="price"]').hidden = choice.tables === 'drop';
+    document.querySelector('[data-slider="elas"]').hidden = choice.tables === 'drop';
     var r = compute(), P = BASE.p, S = BASE.s;
     Object.keys(r).forEach(function (key) {
       P += r[key].p; S += r[key].s;
       var el = $('d-' + key), d = r[key].p;
       el.textContent = r[key].off ? 'Off' : signed(d);
-      el.className = 'delta ' + (r[key].off || Math.abs(d) < 50 ? 'zero' : (d > 0 ? 'pos' : 'neg'));
+      el.className = 'delta text-label-m ' + (r[key].off || Math.abs(d) < 50 ? 'zero' : (d > 0 ? 'pos' : 'neg'));
       document.querySelector('.lever[data-lever="' + key + '"]').classList.toggle('off', !!r[key].off);
     });
     $('k-profit').textContent = money(P);
-    $('k-profit-s').innerHTML = '<b style="color:' + (P >= BASE.p ? '#219855' : '#E04243') + '">' + signed(P - BASE.p) + '</b> vs. ' + money(BASE.p) + ' actual';
+    $('k-profit-s').innerHTML = '<b style="color: ' + (P >= BASE.p ? C.upText : C.downText) + '">' + signed(P - BASE.p) + '</b> vs. ' + money(BASE.p) + ' actual';
     $('k-margin').textContent = pct(P / S);
     $('k-margin-s').innerHTML = '<b>' + ((P / S - CO_MARGIN) >= 0 ? '+' : '−') + (Math.abs(P / S - CO_MARGIN) * 100).toFixed(1) + ' pts</b> vs. ' + pct(CO_MARGIN) + ' actual';
     $('k-sales').textContent = money(S);
@@ -358,15 +391,16 @@
     draw(r);
   }
 
-  document.querySelectorAll('input').forEach(function (el) { el.addEventListener('input', update); el.addEventListener('change', update); });
   $('reset').addEventListener('click', function () {
-    Object.keys(DEFAULTS).forEach(function (id) { $(id).value = DEFAULTS[id]; });
-    document.querySelectorAll('.lever-head input[type=checkbox]').forEach(function (c) { c.checked = true; });
-    document.querySelector('input[name="tables"][value="reprice"]').checked = true;
-    document.querySelector('input[name="cust"][value="fix"]').checked = true;
+    Object.keys(levers).forEach(function (k) { levers[k] = true; });
+    document.querySelectorAll('[data-lever-switch]').forEach(function (sw) { setSwitch(sw, true); });
+    Object.keys(sliders).forEach(function (k) { sliders[k].set(sliders[k].def, true); });
+    choice.tables = 'reprice'; choice.cust = 'fix'; paintSeg('tables'); paintSeg('cust');
     update();
   });
-  window.addEventListener('resize', update);
+  window.addEventListener('resize', function () { paintSeg('tables'); paintSeg('cust'); update(); });
+  paintSeg('tables'); paintSeg('cust');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { paintSeg('tables'); paintSeg('cust'); });
   update();
 })();
 </script>
